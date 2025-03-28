@@ -6,17 +6,13 @@
   <title>레이드 체크리스트</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet" />
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       font-family: 'Noto Sans KR', sans-serif;
       margin: 0;
       background-color: #f4f6f9;
       color: #333;
     }
-
     header {
       background-color: #343a40;
       padding: 20px;
@@ -25,12 +21,10 @@
       justify-content: space-between;
       align-items: center;
     }
-
     header h1 {
       font-size: 22px;
       margin: 0;
     }
-
     .reset-btn {
       padding: 10px 20px;
       background-color: #dc3545;
@@ -41,22 +35,16 @@
       cursor: pointer;
       transition: background-color 0.2s;
     }
-
-    .reset-btn:hover {
-      background-color: #c82333;
-    }
-
+    .reset-btn:hover { background-color: #c82333; }
     .container {
       max-width: 1200px;
       margin: 30px auto;
       padding: 0 20px;
     }
-
     .controls {
       text-align: center;
       margin-bottom: 40px;
     }
-
     .controls input {
       padding: 10px;
       margin: 5px;
@@ -65,7 +53,6 @@
       border-radius: 5px;
       font-size: 15px;
     }
-
     .controls button {
       padding: 10px 22px;
       margin: 5px;
@@ -77,18 +64,15 @@
       font-size: 15px;
       transition: background-color 0.2s;
     }
-
     .controls button:hover {
       background-color: #0069d9;
     }
-
     .raid-wrapper {
       display: flex;
       gap: 30px;
       justify-content: center;
       flex-wrap: wrap;
     }
-
     .raid-board {
       flex: 1;
       min-width: 360px;
@@ -98,7 +82,6 @@
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
       padding: 20px;
     }
-
     .raid-board h2 {
       text-align: center;
       font-size: 20px;
@@ -107,45 +90,28 @@
       border-bottom: 1px solid #eee;
       padding-bottom: 10px;
     }
-
     table {
       width: 100%;
       border-collapse: collapse;
     }
-
     th, td {
       padding: 12px;
       border: 1px solid #ddd;
       text-align: center;
       font-size: 14px;
     }
-
-    th {
-      background-color: #f1f3f5;
-    }
-
+    th { background-color: #f1f3f5; }
     td.clickable {
       cursor: pointer;
       user-select: none;
       transition: background-color 0.2s;
     }
-
     input[type="checkbox"] {
       display: none;
     }
-
-    .easy.checked {
-      background-color: #d4edda;
-    }
-
-    .normal.checked {
-      background-color: #fff3cd;
-    }
-
-    .hard.checked {
-      background-color: #f8d7da;
-    }
-
+    .easy.checked { background-color: #d4edda; }
+    .normal.checked { background-color: #fff3cd; }
+    .hard.checked { background-color: #f8d7da; }
     .delete-btn {
       background-color: #ff4d4d;
       border: none;
@@ -156,7 +122,6 @@
       font-size: 13px;
       transition: background-color 0.2s;
     }
-
     .delete-btn:hover {
       background-color: #e60000;
     }
@@ -221,9 +186,9 @@
         alert("이름과 마크 닉네임을 입력해주세요!");
         return;
       }
-
       addRow("teragonTable", name, nick);
       addRow("exoniaTable", name, nick);
+      saveToLocalStorage();
 
       document.getElementById("playerName").value = "";
       document.getElementById("playerNick").value = "";
@@ -255,11 +220,13 @@
       const checkbox = cell.querySelector('input[type="checkbox"]');
       checkbox.checked = !checkbox.checked;
       cell.classList.toggle('checked', checkbox.checked);
+      saveToLocalStorage();
     }
 
     function deleteRow(button) {
       const row = button.closest("tr");
       row.remove();
+      saveToLocalStorage();
     }
 
     function resetAllTables() {
@@ -270,7 +237,60 @@
         checkboxes.forEach(cb => cb.checked = false);
         cells.forEach(cell => cell.classList.remove('checked'));
       });
+      saveToLocalStorage();
     }
+
+    function saveToLocalStorage() {
+      const raids = ['teragonTable', 'exoniaTable'];
+      const data = {};
+
+      raids.forEach(id => {
+        const rows = [];
+        const table = document.getElementById(id);
+        table.querySelectorAll('tr').forEach(row => {
+          const cells = row.querySelectorAll('td');
+          rows.push({
+            name: cells[0].innerText,
+            nick: cells[1].innerText,
+            easy: cells[2].classList.contains('checked'),
+            normal: cells[3].classList.contains('checked'),
+            hard: cells[4].classList.contains('checked'),
+          });
+        });
+        data[id] = rows;
+      });
+
+      localStorage.setItem("raidData", JSON.stringify(data));
+    }
+
+    function loadFromLocalStorage() {
+      const data = JSON.parse(localStorage.getItem("raidData"));
+      if (!data) return;
+
+      for (const [tableId, rows] of Object.entries(data)) {
+        rows.forEach(({ name, nick, easy, normal, hard }) => {
+          const table = document.getElementById(tableId);
+          const newRow = document.createElement("tr");
+          newRow.innerHTML = `
+            <td>${name}</td>
+            <td>${nick}</td>
+            <td class="clickable easy${easy ? ' checked' : ''}" onclick="toggleCheckbox(this)">
+              <input type="checkbox" ${easy ? 'checked' : ''}>
+            </td>
+            <td class="clickable normal${normal ? ' checked' : ''}" onclick="toggleCheckbox(this)">
+              <input type="checkbox" ${normal ? 'checked' : ''}>
+            </td>
+            <td class="clickable hard${hard ? ' checked' : ''}" onclick="toggleCheckbox(this)">
+              <input type="checkbox" ${hard ? 'checked' : ''}>
+            </td>
+            <td><button class="delete-btn" onclick="deleteRow(this)">삭제</button></td>
+          `;
+          table.appendChild(newRow);
+        });
+      }
+    }
+
+    window.onload = loadFromLocalStorage;
   </script>
 
 </body>
