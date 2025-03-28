@@ -4,17 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>레이드 체크리스트</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; }
     body {
       font-family: 'Noto Sans KR', sans-serif;
       margin: 0;
-      background-color: #f4f6f9;
-      color: #333;
+      background-color: #f1f3f5;
+      color: #212529;
     }
     header {
-      background-color: #343a40;
+      background-color: #1f2d3d;
       padding: 20px;
       color: white;
       display: flex;
@@ -24,141 +24,141 @@
     header h1 {
       font-size: 22px;
       margin: 0;
+      font-weight: 600;
     }
     .reset-btn {
-      padding: 10px 20px;
-      background-color: #dc3545;
+      padding: 8px 16px;
+      background-color: #495057;
       color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
       font-size: 14px;
       cursor: pointer;
+      transition: background-color 0.2s;
     }
-    .reset-btn:hover { background-color: #c82333; }
+    .reset-btn:hover {
+      background-color: #343a40;
+    }
     .container {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 30px auto;
       padding: 0 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
     }
     .group-section {
-      border: 2px solid #007bff;
-      border-radius: 10px;
-      padding: 20px;
-      background-color: #fff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      border-radius: 12px;
+      background-color: #ffffff;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      padding: 30px;
+      margin-bottom: 40px;
     }
     .group-section h2 {
       text-align: center;
-      color: #007bff;
-      margin-bottom: 20px;
-      font-size: 24px;
+      font-size: 22px;
+      margin-bottom: 30px;
+      color: #0d6efd;
     }
     .controls {
       display: flex;
       justify-content: center;
+      flex-wrap: wrap;
       gap: 10px;
       margin-bottom: 30px;
-      flex-wrap: wrap;
     }
     .controls input {
-      padding: 8px;
-      width: 180px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+      padding: 10px;
+      width: 200px;
+      border: 1px solid #ced4da;
+      border-radius: 6px;
       font-size: 14px;
     }
     .controls button {
-      padding: 9px 20px;
+      padding: 10px 20px;
+      background-color: #0d6efd;
+      color: white;
       border: none;
-      background-color: #007bff;
-      color: #fff;
-      border-radius: 5px;
-      cursor: pointer;
+      border-radius: 6px;
       font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s;
     }
     .controls button:hover {
-      background-color: #0069d9;
+      background-color: #0b5ed7;
     }
-    .raid-board-row {
+    .raid-row {
       display: flex;
       justify-content: space-between;
-      gap: 20px;
+      align-items: flex-start;
       flex-wrap: nowrap;
     }
     .raid-board {
-      flex: 1;
-      background-color: #f9fafb;
-      padding: 10px;
+      background-color: #f8f9fa;
       border-radius: 10px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      width: 700px;
     }
     .raid-board h3 {
-      font-size: 16px;
-      margin-bottom: 10px;
+      font-size: 17px;
+      margin-bottom: 15px;
+      color: #343a40;
       display: flex;
-      align-items: flex-start; /* 요청사항: 아이콘+텍스트 위 정렬 */
+      align-items: center;
       gap: 6px;
     }
     .raid-board h3 .dot {
-      width: 12px;
-      height: 12px;
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
       display: inline-block;
-      margin-top: 3px;
     }
-    .teragon .dot { background-color: purple; }
-    .exonia .dot { background-color: gold; }
-
+    .dot.purple { background-color: purple; }
+    .dot.yellow { background-color: gold; }
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 13px;
       table-layout: fixed;
+      font-size: 13px;
+      background-color: white;
+      border-radius: 8px;
+      overflow: hidden;
     }
     th, td {
-      padding: 6px 8px; /* 높이 줄이기 */
-      border: 1px solid #ddd;
+      padding: 6px 4px;
+      border: 1px solid #dee2e6;
+      white-space: nowrap;
+      vertical-align: middle;
       text-align: center;
-      word-break: break-word;
-      vertical-align: middle; /* 내용 세로 가운데 정렬 */
     }
-    th { background-color: #f1f3f5; }
+    td:first-child,
+    td:nth-child(2) {
+      text-align: left;
+    }
     td.clickable {
       cursor: pointer;
-      user-select: none;
+      transition: background-color 0.2s;
     }
-    input[type="checkbox"] {
-      display: none;
-    }
-    .easy.checked { background-color: #d4edda; }
-    .normal.checked { background-color: #fff3cd; }
-    .hard.checked { background-color: #f8d7da; }
+    .easy.checked { background-color: #e6f4ea; }
+    .normal.checked { background-color: #fff7e6; }
+    .hard.checked { background-color: #fae5e8; }
+    input[type="checkbox"] { display: none; }
     .delete-btn {
-      background-color: #ff4d4d;
+      background-color: #dc3545;
       border: none;
-      padding: 5px 10px;
+      padding: 6px 12px;
       border-radius: 4px;
       cursor: pointer;
       color: #fff;
-      font-size: 12px;
+      font-size: 13px;
     }
-    .delete-btn:hover {
-      background-color: #e60000;
-    }
+    .delete-btn:hover { background-color: #c82333; }
   </style>
 </head>
 <body>
-
   <header>
     <h1>레이드 체크리스트</h1>
-    <button class="reset-btn" onclick="resetAllTables()">초기화</button>
+    <button class="reset-btn" onclick="resetClearStates()">클리어 상태 초기화</button>
   </header>
-
   <div class="container">
-    <!-- 1군 -->
     <div class="group-section">
       <h2>1군</h2>
       <div class="controls">
@@ -166,16 +166,16 @@
         <input type="text" id="playerNick1" placeholder="마크 닉네임 입력" />
         <button onclick="addPlayer('1')">추가</button>
       </div>
-      <div class="raid-board-row">
-        <div class="raid-board teragon">
-          <h3><span class="dot"></span> 테라곤</h3>
+      <div class="raid-row">
+        <div class="raid-board">
+          <h3><span class="dot purple"></span> 테라곤</h3>
           <table>
             <thead><tr><th>이름</th><th>마크 닉네임</th><th>이지</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
             <tbody id="teragonTable1"></tbody>
           </table>
         </div>
-        <div class="raid-board exonia">
-          <h3><span class="dot"></span> 엑소니아</h3>
+        <div class="raid-board">
+          <h3><span class="dot yellow"></span> 엑소니아</h3>
           <table>
             <thead><tr><th>이름</th><th>마크 닉네임</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
             <tbody id="exoniaTable1"></tbody>
@@ -184,7 +184,6 @@
       </div>
     </div>
 
-    <!-- 2군 -->
     <div class="group-section">
       <h2>2군</h2>
       <div class="controls">
@@ -192,16 +191,16 @@
         <input type="text" id="playerNick2" placeholder="마크 닉네임 입력" />
         <button onclick="addPlayer('2')">추가</button>
       </div>
-      <div class="raid-board-row">
-        <div class="raid-board teragon">
-          <h3><span class="dot"></span> 테라곤</h3>
+      <div class="raid-row">
+        <div class="raid-board">
+          <h3><span class="dot purple"></span> 테라곤</h3>
           <table>
             <thead><tr><th>이름</th><th>마크 닉네임</th><th>이지</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
             <tbody id="teragonTable2"></tbody>
           </table>
         </div>
-        <div class="raid-board exonia">
-          <h3><span class="dot"></span> 엑소니아</h3>
+        <div class="raid-board">
+          <h3><span class="dot yellow"></span> 엑소니아</h3>
           <table>
             <thead><tr><th>이름</th><th>마크 닉네임</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
             <tbody id="exoniaTable2"></tbody>
@@ -210,7 +209,6 @@
       </div>
     </div>
   </div>
-
   <script>
     function addPlayer(side) {
       const name = document.getElementById(`playerName${side}`).value.trim();
@@ -265,23 +263,21 @@
       saveData();
     }
 
-    function resetAllTables() {
-      ['teragonTable1', 'exoniaTable1', 'teragonTable2', 'exoniaTable2'].forEach(id => {
-        const table = document.getElementById(id);
-        table.innerHTML = '';
-      });
-      localStorage.removeItem('raidData');
+    function resetClearStates() {
+      document.querySelectorAll("input[type='checkbox']").forEach(cb => cb.checked = false);
+      document.querySelectorAll("td.clickable").forEach(cell => cell.classList.remove("checked"));
+      saveData();
     }
 
     function saveData() {
       const data = {};
       ['teragonTable1', 'exoniaTable1', 'teragonTable2', 'exoniaTable2'].forEach(id => {
-        const rows = document.getElementById(id).querySelectorAll("tr");
+        const rows = document.getElementById(id)?.querySelectorAll("tr") || [];
         data[id] = Array.from(rows).map(row => {
           const cells = row.querySelectorAll("td");
           return {
-            name: cells[0].textContent,
-            nick: cells[1].textContent,
+            name: cells[0]?.textContent,
+            nick: cells[1]?.textContent,
             easy: cells.length === 6 ? cells[2].classList.contains("checked") : null,
             normal: cells.length === 6 ? cells[3].classList.contains("checked") : cells[2].classList.contains("checked"),
             hard: cells.length === 6 ? cells[4].classList.contains("checked") : cells[3].classList.contains("checked")
@@ -302,6 +298,5 @@
 
     window.addEventListener("load", loadData);
   </script>
-
 </body>
 </html>
