@@ -186,6 +186,7 @@
         alert("이름과 마크 닉네임을 입력해주세요!");
         return;
       }
+
       addRow("teragonTable", name, nick);
       addRow("exoniaTable", name, nick);
       saveToLocalStorage();
@@ -194,25 +195,24 @@
       document.getElementById("playerNick").value = "";
     }
 
-    function addRow(tableId, name, nick) {
+    function addRow(tableId, name, nick, easy = false, normal = false, hard = false) {
       const table = document.getElementById(tableId);
       const newRow = document.createElement("tr");
 
       newRow.innerHTML = `
         <td>${name}</td>
         <td>${nick}</td>
-        <td class="clickable easy" onclick="toggleCheckbox(this)">
-          <input type="checkbox">
+        <td class="clickable easy${easy ? ' checked' : ''}" onclick="toggleCheckbox(this)">
+          <input type="checkbox" ${easy ? 'checked' : ''}>
         </td>
-        <td class="clickable normal" onclick="toggleCheckbox(this)">
-          <input type="checkbox">
+        <td class="clickable normal${normal ? ' checked' : ''}" onclick="toggleCheckbox(this)">
+          <input type="checkbox" ${normal ? 'checked' : ''}>
         </td>
-        <td class="clickable hard" onclick="toggleCheckbox(this)">
-          <input type="checkbox">
+        <td class="clickable hard${hard ? ' checked' : ''}" onclick="toggleCheckbox(this)">
+          <input type="checkbox" ${hard ? 'checked' : ''}>
         </td>
         <td><button class="delete-btn" onclick="deleteRow(this)">삭제</button></td>
       `;
-
       table.appendChild(newRow);
     }
 
@@ -230,31 +230,26 @@
     }
 
     function resetAllTables() {
-      ['teragonTable', 'exoniaTable'].forEach(id => {
-        const table = document.getElementById(id);
-        const checkboxes = table.querySelectorAll('input[type="checkbox"]');
-        const cells = table.querySelectorAll('.clickable');
-        checkboxes.forEach(cb => cb.checked = false);
-        cells.forEach(cell => cell.classList.remove('checked'));
-      });
-      saveToLocalStorage();
+      document.getElementById("teragonTable").innerHTML = "";
+      document.getElementById("exoniaTable").innerHTML = "";
+      localStorage.removeItem("raidData");
     }
 
     function saveToLocalStorage() {
-      const raids = ['teragonTable', 'exoniaTable'];
+      const tables = ["teragonTable", "exoniaTable"];
       const data = {};
 
-      raids.forEach(id => {
-        const rows = [];
+      tables.forEach(id => {
         const table = document.getElementById(id);
-        table.querySelectorAll('tr').forEach(row => {
-          const cells = row.querySelectorAll('td');
+        const rows = [];
+        table.querySelectorAll("tr").forEach(row => {
+          const cells = row.querySelectorAll("td");
           rows.push({
             name: cells[0].innerText,
             nick: cells[1].innerText,
-            easy: cells[2].classList.contains('checked'),
-            normal: cells[3].classList.contains('checked'),
-            hard: cells[4].classList.contains('checked'),
+            easy: cells[2].classList.contains("checked"),
+            normal: cells[3].classList.contains("checked"),
+            hard: cells[4].classList.contains("checked")
           });
         });
         data[id] = rows;
@@ -267,29 +262,14 @@
       const data = JSON.parse(localStorage.getItem("raidData"));
       if (!data) return;
 
-      for (const [tableId, rows] of Object.entries(data)) {
-        rows.forEach(({ name, nick, easy, normal, hard }) => {
-          const table = document.getElementById(tableId);
-          const newRow = document.createElement("tr");
-          newRow.innerHTML = `
-            <td>${name}</td>
-            <td>${nick}</td>
-            <td class="clickable easy${easy ? ' checked' : ''}" onclick="toggleCheckbox(this)">
-              <input type="checkbox" ${easy ? 'checked' : ''}>
-            </td>
-            <td class="clickable normal${normal ? ' checked' : ''}" onclick="toggleCheckbox(this)">
-              <input type="checkbox" ${normal ? 'checked' : ''}>
-            </td>
-            <td class="clickable hard${hard ? ' checked' : ''}" onclick="toggleCheckbox(this)">
-              <input type="checkbox" ${hard ? 'checked' : ''}>
-            </td>
-            <td><button class="delete-btn" onclick="deleteRow(this)">삭제</button></td>
-          `;
-          table.appendChild(newRow);
+      for (const tableId in data) {
+        data[tableId].forEach(entry => {
+          addRow(tableId, entry.name, entry.nick, entry.easy, entry.normal, entry.hard);
         });
       }
     }
 
+    // 불러오기 실행
     window.onload = loadFromLocalStorage;
   </script>
 
