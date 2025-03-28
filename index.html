@@ -33,7 +33,6 @@
       border-radius: 5px;
       font-size: 14px;
       cursor: pointer;
-      transition: background-color 0.2s;
     }
     .reset-btn:hover { background-color: #c82333; }
     .container {
@@ -42,13 +41,13 @@
       padding: 0 20px;
       display: flex;
       flex-direction: column;
-      gap: 50px;
+      gap: 40px;
     }
     .group-section {
       border: 2px solid #007bff;
       border-radius: 10px;
       padding: 20px;
-      background-color: #ffffff;
+      background-color: #fff;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
     .group-section h2 {
@@ -58,12 +57,14 @@
       font-size: 24px;
     }
     .controls {
-      text-align: center;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
       margin-bottom: 30px;
+      flex-wrap: wrap;
     }
     .controls input {
       padding: 8px;
-      margin: 4px;
       width: 180px;
       border: 1px solid #ccc;
       border-radius: 5px;
@@ -71,43 +72,63 @@
     }
     .controls button {
       padding: 9px 20px;
-      margin: 4px;
       border: none;
       background-color: #007bff;
       color: #fff;
       border-radius: 5px;
       cursor: pointer;
       font-size: 14px;
-      transition: background-color 0.2s;
     }
     .controls button:hover {
       background-color: #0069d9;
     }
+    .raid-board-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: nowrap;
+    }
     .raid-board {
-      margin-bottom: 20px;
-      overflow-x: auto;
+      flex: 1;
+      background-color: #f9fafb;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.03);
     }
     .raid-board h3 {
-      text-align: center;
-      font-size: 18px;
+      font-size: 16px;
       margin-bottom: 10px;
-      color: #333;
+      display: flex;
+      align-items: flex-start; /* 요청사항: 아이콘+텍스트 위 정렬 */
+      gap: 6px;
     }
+    .raid-board h3 .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-top: 3px;
+    }
+    .teragon .dot { background-color: purple; }
+    .exonia .dot { background-color: gold; }
+
     table {
       width: 100%;
       border-collapse: collapse;
       font-size: 13px;
+      table-layout: fixed;
     }
     th, td {
-      padding: 8px;
+      padding: 6px 8px; /* 높이 줄이기 */
       border: 1px solid #ddd;
       text-align: center;
+      word-break: break-word;
+      vertical-align: middle; /* 내용 세로 가운데 정렬 */
     }
     th { background-color: #f1f3f5; }
     td.clickable {
       cursor: pointer;
       user-select: none;
-      transition: background-color 0.2s;
     }
     input[type="checkbox"] {
       display: none;
@@ -123,7 +144,6 @@
       cursor: pointer;
       color: #fff;
       font-size: 12px;
-      transition: background-color 0.2s;
     }
     .delete-btn:hover {
       background-color: #e60000;
@@ -146,19 +166,21 @@
         <input type="text" id="playerNick1" placeholder="마크 닉네임 입력" />
         <button onclick="addPlayer('1')">추가</button>
       </div>
-      <div class="raid-board">
-        <h3>테라곤</h3>
-        <table>
-          <thead><tr><th>이름</th><th>마크 닉네임</th><th>이지</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
-          <tbody id="teragonTable1"></tbody>
-        </table>
-      </div>
-      <div class="raid-board">
-        <h3>엑소니아</h3>
-        <table>
-          <thead><tr><th>이름</th><th>마크 닉네임</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
-          <tbody id="exoniaTable1"></tbody>
-        </table>
+      <div class="raid-board-row">
+        <div class="raid-board teragon">
+          <h3><span class="dot"></span> 테라곤</h3>
+          <table>
+            <thead><tr><th>이름</th><th>마크 닉네임</th><th>이지</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
+            <tbody id="teragonTable1"></tbody>
+          </table>
+        </div>
+        <div class="raid-board exonia">
+          <h3><span class="dot"></span> 엑소니아</h3>
+          <table>
+            <thead><tr><th>이름</th><th>마크 닉네임</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
+            <tbody id="exoniaTable1"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -170,19 +192,21 @@
         <input type="text" id="playerNick2" placeholder="마크 닉네임 입력" />
         <button onclick="addPlayer('2')">추가</button>
       </div>
-      <div class="raid-board">
-        <h3>테라곤</h3>
-        <table>
-          <thead><tr><th>이름</th><th>마크 닉네임</th><th>이지</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
-          <tbody id="teragonTable2"></tbody>
-        </table>
-      </div>
-      <div class="raid-board">
-        <h3>엑소니아</h3>
-        <table>
-          <thead><tr><th>이름</th><th>마크 닉네임</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
-          <tbody id="exoniaTable2"></tbody>
-        </table>
+      <div class="raid-board-row">
+        <div class="raid-board teragon">
+          <h3><span class="dot"></span> 테라곤</h3>
+          <table>
+            <thead><tr><th>이름</th><th>마크 닉네임</th><th>이지</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
+            <tbody id="teragonTable2"></tbody>
+          </table>
+        </div>
+        <div class="raid-board exonia">
+          <h3><span class="dot"></span> 엑소니아</h3>
+          <table>
+            <thead><tr><th>이름</th><th>마크 닉네임</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
+            <tbody id="exoniaTable2"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
