@@ -40,65 +40,68 @@
       max-width: 1200px;
       margin: 30px auto;
       padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 50px;
+    }
+    .group-section {
+      border: 2px solid #007bff;
+      border-radius: 10px;
+      padding: 20px;
+      background-color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .group-section h2 {
+      text-align: center;
+      color: #007bff;
+      margin-bottom: 20px;
+      font-size: 24px;
     }
     .controls {
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
     }
     .controls input {
-      padding: 10px;
-      margin: 5px;
-      width: 200px;
+      padding: 8px;
+      margin: 4px;
+      width: 180px;
       border: 1px solid #ccc;
       border-radius: 5px;
-      font-size: 15px;
+      font-size: 14px;
     }
     .controls button {
-      padding: 10px 22px;
-      margin: 5px;
+      padding: 9px 20px;
+      margin: 4px;
       border: none;
       background-color: #007bff;
       color: #fff;
       border-radius: 5px;
       cursor: pointer;
-      font-size: 15px;
+      font-size: 14px;
       transition: background-color 0.2s;
     }
     .controls button:hover {
       background-color: #0069d9;
     }
-    .raid-wrapper {
-      display: flex;
-      gap: 30px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
     .raid-board {
-      flex: 1;
-      min-width: 360px;
-      max-width: 550px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-      padding: 20px;
-    }
-    .raid-board h2 {
-      text-align: center;
-      font-size: 20px;
-      margin-top: 0;
       margin-bottom: 20px;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 10px;
+      overflow-x: auto;
+    }
+    .raid-board h3 {
+      text-align: center;
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #333;
     }
     table {
       width: 100%;
       border-collapse: collapse;
+      font-size: 13px;
     }
     th, td {
-      padding: 12px;
+      padding: 8px;
       border: 1px solid #ddd;
       text-align: center;
-      font-size: 14px;
     }
     th { background-color: #f1f3f5; }
     td.clickable {
@@ -115,11 +118,11 @@
     .delete-btn {
       background-color: #ff4d4d;
       border: none;
-      padding: 6px 12px;
+      padding: 5px 10px;
       border-radius: 4px;
       cursor: pointer;
       color: #fff;
-      font-size: 13px;
+      font-size: 12px;
       transition: background-color 0.2s;
     }
     .delete-btn:hover {
@@ -135,66 +138,69 @@
   </header>
 
   <div class="container">
-    <div class="controls">
-      <input type="text" id="playerName" placeholder="이름 입력" />
-      <input type="text" id="playerNick" placeholder="마크 닉네임 입력" />
-      <button onclick="addPlayerToBoth()">추가</button>
-    </div>
-
-    <div class="raid-wrapper">
-      <!-- 테라곤 -->
+    <!-- 1군 -->
+    <div class="group-section">
+      <h2>1군</h2>
+      <div class="controls">
+        <input type="text" id="playerName1" placeholder="이름 입력" />
+        <input type="text" id="playerNick1" placeholder="마크 닉네임 입력" />
+        <button onclick="addPlayer('1')">추가</button>
+      </div>
       <div class="raid-board">
-        <h2>테라곤</h2>
+        <h3>테라곤</h3>
         <table>
-          <thead>
-            <tr>
-              <th>이름</th>
-              <th>마크 닉네임</th>
-              <th>이지</th>
-              <th>노말</th>
-              <th>하드</th>
-              <th>삭제</th>
-            </tr>
-          </thead>
-          <tbody id="teragonTable"></tbody>
+          <thead><tr><th>이름</th><th>마크 닉네임</th><th>이지</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
+          <tbody id="teragonTable1"></tbody>
         </table>
       </div>
-
-      <!-- 엑소니아 -->
       <div class="raid-board">
-        <h2>엑소니아</h2>
+        <h3>엑소니아</h3>
         <table>
-          <thead>
-            <tr>
-              <th>이름</th>
-              <th>마크 닉네임</th>
-              <th>노말</th>
-              <th>하드</th>
-              <th>삭제</th>
-            </tr>
-          </thead>
-          <tbody id="exoniaTable"></tbody>
+          <thead><tr><th>이름</th><th>마크 닉네임</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
+          <tbody id="exoniaTable1"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 2군 -->
+    <div class="group-section">
+      <h2>2군</h2>
+      <div class="controls">
+        <input type="text" id="playerName2" placeholder="이름 입력" />
+        <input type="text" id="playerNick2" placeholder="마크 닉네임 입력" />
+        <button onclick="addPlayer('2')">추가</button>
+      </div>
+      <div class="raid-board">
+        <h3>테라곤</h3>
+        <table>
+          <thead><tr><th>이름</th><th>마크 닉네임</th><th>이지</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
+          <tbody id="teragonTable2"></tbody>
+        </table>
+      </div>
+      <div class="raid-board">
+        <h3>엑소니아</h3>
+        <table>
+          <thead><tr><th>이름</th><th>마크 닉네임</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
+          <tbody id="exoniaTable2"></tbody>
         </table>
       </div>
     </div>
   </div>
 
   <script>
-    function addPlayerToBoth() {
-      const name = document.getElementById("playerName").value.trim();
-      const nick = document.getElementById("playerNick").value.trim();
+    function addPlayer(side) {
+      const name = document.getElementById(`playerName${side}`).value.trim();
+      const nick = document.getElementById(`playerNick${side}`).value.trim();
       if (!name || !nick) {
         alert("이름과 마크 닉네임을 입력해주세요!");
         return;
       }
 
-      addRow("teragonTable", name, nick, true);
-      addRow("exoniaTable", name, nick, false);
+      addRow(`teragonTable${side}`, name, nick, true);
+      addRow(`exoniaTable${side}`, name, nick, false);
 
-      saveToLocalStorage();
-
-      document.getElementById("playerName").value = "";
-      document.getElementById("playerNick").value = "";
+      document.getElementById(`playerName${side}`).value = "";
+      document.getElementById(`playerNick${side}`).value = "";
     }
 
     function addRow(tableId, name, nick, includeEasy, easy = false, normal = false, hard = false) {
@@ -225,70 +231,22 @@
       const checkbox = cell.querySelector('input[type="checkbox"]');
       checkbox.checked = !checkbox.checked;
       cell.classList.toggle('checked', checkbox.checked);
-      saveToLocalStorage();
     }
 
     function deleteRow(button) {
       const row = button.closest("tr");
       row.remove();
-      saveToLocalStorage();
     }
 
     function resetAllTables() {
-      ['teragonTable', 'exoniaTable'].forEach(id => {
+      ['teragonTable1', 'exoniaTable1', 'teragonTable2', 'exoniaTable2'].forEach(id => {
         const table = document.getElementById(id);
         const checkboxes = table.querySelectorAll('input[type="checkbox"]');
         const cells = table.querySelectorAll('.clickable');
         checkboxes.forEach(cb => cb.checked = false);
         cells.forEach(cell => cell.classList.remove('checked'));
       });
-      saveToLocalStorage();
     }
-
-    function saveToLocalStorage() {
-      const data = {
-        teragon: [],
-        exonia: []
-      };
-
-      document.querySelectorAll("#teragonTable tr").forEach(row => {
-        const cells = row.querySelectorAll("td");
-        data.teragon.push({
-          name: cells[0].innerText,
-          nick: cells[1].innerText,
-          easy: cells[2].classList.contains("checked"),
-          normal: cells[3].classList.contains("checked"),
-          hard: cells[4].classList.contains("checked")
-        });
-      });
-
-      document.querySelectorAll("#exoniaTable tr").forEach(row => {
-        const cells = row.querySelectorAll("td");
-        data.exonia.push({
-          name: cells[0].innerText,
-          nick: cells[1].innerText,
-          normal: cells[2].classList.contains("checked"),
-          hard: cells[3].classList.contains("checked")
-        });
-      });
-
-      localStorage.setItem("raidData", JSON.stringify(data));
-    }
-
-    function loadFromLocalStorage() {
-      const data = JSON.parse(localStorage.getItem("raidData"));
-      if (!data) return;
-
-      data.teragon.forEach(entry => {
-        addRow("teragonTable", entry.name, entry.nick, true, entry.easy, entry.normal, entry.hard);
-      });
-
-      data.exonia.forEach(entry => {
-        addRow("exoniaTable", entry.name, entry.nick, false, false, entry.normal, entry.hard);
-      });
-    }
-
-    window.onload = loadFromLocalStorage;
   </script>
 
 </body>
