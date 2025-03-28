@@ -198,6 +198,7 @@
 
       addRow(`teragonTable${side}`, name, nick, true);
       addRow(`exoniaTable${side}`, name, nick, false);
+      saveData();
 
       document.getElementById(`playerName${side}`).value = "";
       document.getElementById(`playerNick${side}`).value = "";
@@ -231,22 +232,51 @@
       const checkbox = cell.querySelector('input[type="checkbox"]');
       checkbox.checked = !checkbox.checked;
       cell.classList.toggle('checked', checkbox.checked);
+      saveData();
     }
 
     function deleteRow(button) {
       const row = button.closest("tr");
       row.remove();
+      saveData();
     }
 
     function resetAllTables() {
       ['teragonTable1', 'exoniaTable1', 'teragonTable2', 'exoniaTable2'].forEach(id => {
         const table = document.getElementById(id);
-        const checkboxes = table.querySelectorAll('input[type="checkbox"]');
-        const cells = table.querySelectorAll('.clickable');
-        checkboxes.forEach(cb => cb.checked = false);
-        cells.forEach(cell => cell.classList.remove('checked'));
+        table.innerHTML = '';
       });
+      localStorage.removeItem('raidData');
     }
+
+    function saveData() {
+      const data = {};
+      ['teragonTable1', 'exoniaTable1', 'teragonTable2', 'exoniaTable2'].forEach(id => {
+        const rows = document.getElementById(id).querySelectorAll("tr");
+        data[id] = Array.from(rows).map(row => {
+          const cells = row.querySelectorAll("td");
+          return {
+            name: cells[0].textContent,
+            nick: cells[1].textContent,
+            easy: cells.length === 6 ? cells[2].classList.contains("checked") : null,
+            normal: cells.length === 6 ? cells[3].classList.contains("checked") : cells[2].classList.contains("checked"),
+            hard: cells.length === 6 ? cells[4].classList.contains("checked") : cells[3].classList.contains("checked")
+          };
+        });
+      });
+      localStorage.setItem("raidData", JSON.stringify(data));
+    }
+
+    function loadData() {
+      const data = JSON.parse(localStorage.getItem("raidData") || '{}');
+      for (let id in data) {
+        data[id].forEach(entry => {
+          addRow(id, entry.name, entry.nick, entry.easy !== null, entry.easy, entry.normal, entry.hard);
+        });
+      }
+    }
+
+    window.addEventListener("load", loadData);
   </script>
 
 </body>
