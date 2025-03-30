@@ -219,7 +219,7 @@
   <!-- 메뉴 -->
   <nav>
     <a href="#checklist">레이드 체크리스트</a>
-    <a href="#cost">레이드모금비용</a>
+    <a href="#cost">레이드 모금</a>
   </nav>
 
   <!-- 체크리스트 -->
@@ -274,9 +274,149 @@
 
   <!-- 모금비용 -->
   <section id="cost">
-    <h1>레이드 모금비용</h1>
-    <p style="text-align: center;">모금비용 관련 정보는 여기에 작성하세요!</p>
-  </section>
+  <h1>레이드 모금</h1>
+
+  <div style="display: flex; gap: 40px; flex-wrap: nowrap; justify-content: center; align-items: flex-start;">
+
+    <!-- 레이드 모금 테이블 (왼쪽) -->
+    <div style="flex: 1; min-width: 300px;">
+      <h2 style="color:#c45a84; text-align: center;">레이드 모금</h2>
+      <table id="fundTable" style="width:100%; border-collapse: collapse; background-color: white; font-size: 14px;">
+        <thead>
+  <tr>
+    <th>닉네임</th>
+    <th>금액</th>
+    <th>표시</th> <!-- ✅ 추가 -->
+    <th>삭제</th>
+  </tr>
+</thead>
+        <tbody id="fundBody">
+          <!-- 행 자동 추가 -->
+        </tbody>
+        <tfoot>
+  <tr>
+    <td colspan="2" style="text-align: right; font-weight: bold;">총합</td>
+    <td colspan="2" id="totalAmount" style="font-weight: bold;">₩0</td>
+  </tr>
+</tfoot>
+      </table>
+      <div style="text-align:center; margin-top: 10px;">
+        <button onclick="addFundRow()" style="padding: 6px 12px; background-color: #e3cbdc; border: none; border-radius: 6px; color: #4b2c3f; cursor: pointer;">행 추가</button>
+      </div>
+    </div>
+
+    <!-- 빌린 무기 테이블 (오른쪽) -->
+    <div style="flex: 1; min-width: 300px;">
+      <h2 style="color:#c45a84; text-align: center;">빌린 무기</h2>
+      <table id="weaponTable" style="width:100%; border-collapse: collapse; background-color: white; font-size: 14px;">
+        <thead style="background-color: #ffe4ec; color: #a84e6d;">
+          <tr>
+            <th style="padding: 10px; border: 1px solid #f3d5e2;">무기 (주인)</th>
+            <th style="padding: 10px; border: 1px solid #f3d5e2;">빌린 사람</th>
+            <th style="padding: 10px; border: 1px solid #f3d5e2;">삭제</th>
+          </tr>
+        </thead>
+        <tbody id="weaponBody">
+          <!-- 행 자동 추가 -->
+        </tbody>
+      </table>
+      <div style="text-align:center; margin-top: 10px;">
+        <button onclick="addWeaponRow()" style="padding: 6px 12px; background-color: #e3cbdc; border: none; border-radius: 6px; color: #4b2c3f; cursor: pointer;">행 추가</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+ function addFundRow() {
+  const tbody = document.getElementById('fundBody');
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td><input type="text" placeholder="닉네임" style="width: 100%; border: none; background: transparent;" /></td>
+    <td><input type="text" class="money" placeholder="금액" style="width: 100%; border: none; background: transparent;" oninput="updateTotal()" /></td>
+    <td class="money-display"></td>
+    <td><button onclick="deleteRow(this)" style="background-color:#dc3545; color:white; border:none; border-radius:4px; padding:4px 8px;">삭제</button></td>
+  `;
+  tbody.appendChild(row);
+}
+
+
+  function addWeaponRow() {
+    const tbody = document.getElementById('weaponBody');
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td style="padding:8px; border: 1px solid #f3d5e2;"><input type="text" placeholder="무기 이름 (주인)" style="width: 100%; border: none; background: transparent;" /></td>
+      <td style="padding:8px; border: 1px solid #f3d5e2;"><input type="text" placeholder="빌린 사람" style="width: 100%; border: none; background: transparent;" /></td>
+      <td style="padding:8px; border: 1px solid #f3d5e2; text-align: center;"><button onclick="deleteRow(this)" style="background-color:#dc3545; color:white; border:none; border-radius:4px; padding:4px 8px;">삭제</button></td>
+    `;
+    tbody.appendChild(row);
+  }
+
+  function deleteRow(btn) {
+    btn.closest('tr').remove();
+    updateTotal();
+  }
+
+ const 한글단위 = {
+  '억': 100000000,
+  '천만': 10000000,
+  '백만': 1000000,
+  '십만': 100000,
+  '만': 10000,
+  '천': 1000
+};
+
+function parseKoreanMoney(input) {
+  let str = input.replace(/,/g, '').trim();
+  if (!str) return 0;
+  let total = 0;
+  let matched = false;
+  for (let unit in 한글단위) {
+    if (str.includes(unit)) {
+      const num = parseFloat(str.split(unit)[0]) || 1;
+      total += num * 한글단위[unit];
+      matched = true;
+      str = str.replace(num + unit, '');
+    }
+  }
+  if (!matched && /^[0-9]+$/.test(str)) {
+    return parseInt(str, 10);
+  }
+  return total;
+}
+
+function formatMoneyDisplay(amount) {
+  let display = '₩' + amount.toLocaleString();
+  if (amount >= 100000000) {
+    display += ' (' + (amount / 100000000) + '억)';
+  } else if (amount >= 10000) {
+    display += ' (' + (amount / 10000) + '만)';
+  }
+  return display;
+}
+
+function updateTotal() {
+  let total = 0;
+  document.querySelectorAll('#fundBody tr').forEach(row => {
+    const input = row.querySelector('.money');
+    const display = row.querySelector('.money-display');
+    const raw = input?.value || '';
+    const amount = parseKoreanMoney(raw);
+    total += amount;
+    if (display) {
+      display.textContent = raw ? formatMoneyDisplay(amount) : '';
+    }
+  });
+  document.getElementById('totalAmount').innerText = formatMoneyDisplay(total);
+}
+
+
+  window.addEventListener('load', () => {
+    addFundRow();
+    addWeaponRow();
+  });
+</script>
+
 
   <!-- 기능 스크립트 -->
   <script>
