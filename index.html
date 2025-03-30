@@ -6,6 +6,32 @@
   <title>화양연화 길드 홈페이지</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet" />
   <style>
+    .job-blade {
+  background-color: #ffe5e9; /* 연한 붉은색 */
+}
+.job-frost {
+  background-color: #e5f0ff; /* 연한 파란색 */
+}
+.job-mage {
+  background-color: #f3e5ff; /* 연한 보라색 */
+}
+.job-warrior {
+  background-color: #fff8e5; /* 연한 노란색 */
+}
+
+/* 위/아래/수정 버튼 디자인 개선 */
+.move-btn, .edit-btn {
+  background-color: #f0d1de;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #4b2c3f;
+}
+.move-btn:hover, .edit-btn:hover {
+  background-color: #e4b9ca;
+}
     html { scroll-behavior: smooth; }
     body {
       font-family: 'Noto Sans KR', sans-serif;
@@ -267,10 +293,62 @@
 
   <!-- 메뉴 -->
   <nav>
+    <a href="#members">길드원 리스트</a>
     <a href="#checklist">레이드 체크리스트</a>
     <a href="#cost">레이드 모금</a>
   </nav>
+<section id="members">
+  <h1>길드원 리스트</h1>
+  <div style="display: flex; gap: 40px; flex-wrap: nowrap; justify-content: center; align-items: flex-start;">
 
+    <!-- 1군 -->
+    <div style="flex: 1; min-width: 300px;">
+      <h2 style="color:#c45a84; text-align:center;">1군</h2>
+      <table id="memberTable1" style="width:100%; border-collapse: collapse; background-color: white; font-size: 14px;">
+        <thead>
+          <tr>
+            <th>이름</th>
+            <th>마크 닉네임</th>
+            <th>직업</th>
+            <th>↑↓</th>
+            <th>수정</th>
+            <th>삭제</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- JS로 행 추가 -->
+        </tbody>
+      </table>
+      <div style="text-align:center; margin-top: 10px;">
+        <button onclick="addMemberRow('1')" style="padding:6px 12px; background:#e3cbdc; border:none; border-radius:6px; color:#4b2c3f; cursor:pointer;">행 추가</button>
+      </div>
+    </div>
+
+    <!-- 2군 -->
+    <div style="flex: 1; min-width: 300px;">
+      <h2 style="color:#c45a84; text-align:center;">2군</h2>
+      <table id="memberTable2" style="width:100%; border-collapse: collapse; background-color: white; font-size: 14px;">
+        <thead>
+          <tr>
+            <th>이름</th>
+            <th>마크 닉네임</th>
+            <th>직업</th>
+            <th>↑↓</th>
+            <th>수정</th>
+            <th>삭제</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- JS로 행 추가 -->
+        </tbody>
+      </table>
+      <div style="text-align:center; margin-top: 10px;">
+        <button onclick="addMemberRow('2')" style="padding:6px 12px; background:#e3cbdc; border:none; border-radius:6px; color:#4b2c3f; cursor:pointer;">행 추가</button>
+      </div>
+    </div>
+
+  </div>
+</section>
   <!-- 체크리스트 -->
   <section id="checklist">
     <div class="checklist-header">
@@ -599,5 +677,120 @@ function loadData() {
    window.addEventListener("load", loadData);
   </script>
 
-</body>
+<script>
+  // 길드원 리스트 행 추가
+  function addMemberRow(group) {
+    const tbody = document.querySelector(`#memberTable${group} tbody`);
+    const row = document.createElement('tr');
+
+    row.innerHTML = `
+      <td><input type="text" placeholder="이름" oninput="updateJobColor(this)" /></td>
+      <td><input type="text" placeholder="마크 닉네임" /></td>
+      <td><input type="text" placeholder="직업" oninput="updateJobColor(this)" /></td>
+      <td>
+        <button class="move-btn" onclick="moveRow(this, -1)">↑</button>
+        <button class="move-btn" onclick="moveRow(this, 1)">↓</button>
+      </td>
+      <td><button class="edit-btn" onclick="toggleEdit(this)">수정</button></td>
+      <td><button class="delete-btn" onclick="deleteRow(this)">삭제</button></td>
+    `;
+    tbody.appendChild(row);
+    saveData(); // 행이 추가되면 자동으로 데이터 저장
+  }
+
+  // 위/아래 이동
+  function moveRow(btn, direction) {
+    const row = btn.closest('tr');
+    const tbody = row.parentNode;
+    const index = Array.from(tbody.children).indexOf(row);
+    const targetIndex = index + direction;
+
+    if (targetIndex < 0 || targetIndex >= tbody.children.length) return;
+    const targetRow = tbody.children[targetIndex];
+
+    if (direction === -1) {
+      tbody.insertBefore(row, targetRow);
+    } else {
+      tbody.insertBefore(targetRow, row);
+    }
+    saveData(); // 이동 후 데이터 저장
+  }
+
+  // 수정/저장 toggle
+  function toggleEdit(btn) {
+    const row = btn.closest('tr');
+    const inputs = row.querySelectorAll('input');
+    const editing = btn.textContent === '수정';
+
+    inputs.forEach(input => input.readOnly = !editing);
+    btn.textContent = editing ? '저장' : '수정';
+
+    if (editing) updateJobColor(inputs[2]); // 직업 컬러 갱신
+    saveData(); // 수정 후 데이터 저장
+  }
+
+  // 직업에 따라 색상 적용
+  function updateJobColor(input) {
+    const row = input.closest('tr');
+    const jobInput = row.querySelectorAll('input')[2];
+    const job = jobInput.value.trim().toLowerCase();
+
+    row.classList.remove('job-blade', 'job-frost', 'job-mage', 'job-warrior');
+    if (job.includes('블레이드')) row.classList.add('job-blade');
+    else if (job.includes('프로스트')) row.classList.add('job-frost');
+    else if (job.includes('메이지')) row.classList.add('job-mage');
+    else if (job.includes('워리어')) row.classList.add('job-warrior');
+    saveData(); // 색상 적용 후 저장
+  }
+
+  // 데이터 저장
+  function saveData() {
+    const data = {};
+    // 1군, 2군 데이터 저장
+    ['1', '2'].forEach(group => {
+      const rows = document.querySelector(`#memberTable${group} tbody`).children;
+      data[`members${group}`] = Array.from(rows).map(row => {
+        const cells = row.querySelectorAll('input');
+        return {
+          name: cells[0].value,
+          nick: cells[1].value,
+          job: cells[2].value
+        };
+      });
+    });
+    // 로컬스토리지에 저장
+    localStorage.setItem("guildMembers", JSON.stringify(data));
+  }
+
+  // 데이터 불러오기
+  function loadData() {
+    const data = JSON.parse(localStorage.getItem("guildMembers")) || {};
+
+    // 1군, 2군 테이블에 데이터 복원
+    ['1', '2'].forEach(group => {
+      const tbody = document.querySelector(`#memberTable${group} tbody`);
+      data[`members${group}`]?.forEach(member => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><input type="text" value="${member.name}" oninput="updateJobColor(this)" /></td>
+          <td><input type="text" value="${member.nick}" /></td>
+          <td><input type="text" value="${member.job}" oninput="updateJobColor(this)" /></td>
+          <td>
+            <button class="move-btn" onclick="moveRow(this, -1)">↑</button>
+            <button class="move-btn" onclick="moveRow(this, 1)">↓</button>
+          </td>
+          <td><button class="edit-btn" onclick="toggleEdit(this)">수정</button></td>
+          <td><button class="delete-btn" onclick="this.closest('tr').remove()">삭제</button></td>
+        `;
+        tbody.appendChild(row);
+        updateJobColor(row.querySelectorAll('input')[2]); // 직업에 맞는 색상 적용
+      });
+    });
+  }
+
+  // 페이지 로드 시 데이터 불러오기
+  window.addEventListener('load', loadData);
+</script>
+
+  </body>
 </html>
