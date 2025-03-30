@@ -459,12 +459,6 @@ function updateTotal() {
   document.getElementById('totalAmount').innerText = formatMoneyDisplay(total);
 }
 
-
- window.addEventListener('load', () => {
-  const existingData = JSON.parse(localStorage.getItem("raidData") || '{}');
-  if (!existingData.fund?.length) addFundRow();
-  if (!existingData.weapon?.length) addWeaponRow();
-});
 </script>
 
 
@@ -569,30 +563,38 @@ function loadData() {
   });
 
   // ✅ 레이드 모금 복원
-  data.fund?.forEach(entry => {
-    const tbody = document.getElementById('fundBody');
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td><input type="text" value="${entry.name}" placeholder="닉네임" /></td>
-      <td><input type="text" value="${entry.amount}" class="money" placeholder="금액" oninput="updateTotal()" /></td>
-      <td class="money-display"></td>
-      <td><button onclick="deleteRow(this)" class="delete-btn">삭제</button></td>
-    `;
-    tbody.appendChild(row);
-  });
-  updateTotal();
-
+ if (data.fund?.length) {
+    data.fund.forEach(entry => {
+      const tbody = document.getElementById('fundBody');
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><input type="text" value="${entry.name}" placeholder="닉네임" /></td>
+        <td><input type="text" value="${entry.amount}" class="money" placeholder="금액" oninput="updateTotal()" /></td>
+        <td class="money-display"></td>
+        <td><button onclick="deleteRow(this)" class="delete-btn">삭제</button></td>
+      `;
+      tbody.appendChild(row);
+    });
+  } else {
+    addFundRow(); // ✅ 없으면 기본 줄 추가
+  }
   // ✅ 빌린 무기 복원
-  data.weapon?.forEach(entry => {
-    const tbody = document.getElementById('weaponBody');
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td><input type="text" value="${entry.weapon}" placeholder="무기 이름 (주인)" /></td>
-      <td><input type="text" value="${entry.borrower}" placeholder="빌린 사람" /></td>
-      <td><button onclick="deleteRow(this)" class="delete-btn">삭제</button></td>
-    `;
-    tbody.appendChild(row);
-  });
+  if (data.weapon?.length) {
+    data.weapon.forEach(entry => {
+      const tbody = document.getElementById('weaponBody');
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><input type="text" value="${entry.weapon}" placeholder="무기 이름 (주인)" /></td>
+        <td><input type="text" value="${entry.borrower}" placeholder="빌린 사람" /></td>
+        <td><button onclick="deleteRow(this)" class="delete-btn">삭제</button></td>
+      `;
+      tbody.appendChild(row);
+    });
+  } else {
+    addWeaponRow(); // ✅ 없으면 기본 줄 추가
+  }
+
+  updateTotal(); // ✅ 총합 갱신
 }
    window.addEventListener("load", loadData);
   </script>
