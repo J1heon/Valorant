@@ -3,33 +3,88 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>레이드 체크리스트</title>
+  <title>화양연화 길드 홈페이지</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet" />
   <style>
-    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
       font-family: 'Noto Sans KR', sans-serif;
       margin: 0;
-      background-color: #f1f3f5;
+      background-color: #fdf8f9;
       color: #212529;
     }
-    header {
-      background-color: #1f2d3d;
-      padding: 20px;
+
+    /* 히어로 영역 */
+    .hero {
+      background: linear-gradient(to bottom, rgba(31, 45, 61, 0.8), rgba(255,255,255,0.1)),
+        url('https://images.unsplash.com/photo-1618005198919-e1d225f1f0b9?auto=format&fit=crop&w=1400&q=80') no-repeat center/cover;
       color: white;
+      text-align: center;
+      padding: 100px 20px 60px;
+    }
+    .hero h1 {
+      font-size: 48px;
+      margin: 0;
+      font-weight: 700;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    /* 상단 메뉴 */
+    nav {
+      background-color: #fff0f5;
+      padding: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      border-bottom: 1px solid #f3d5e2;
+    }
+    nav a {
+      color: #c45a84;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 16px;
+      transition: color 0.3s;
+    }
+    nav a:hover {
+      color: #8a3d61;
+    }
+
+    /* 공통 섹션 */
+    section {
+      padding: 80px 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    section h1 {
+      font-size: 28px;
+      text-align: center;
+      margin-bottom: 40px;
+      color: #c45a84;
+    }
+
+    /* 체크리스트 header 스타일 */
+    .checklist-header {
+      background-color: #fce9f1;
+      padding: 20px;
+      color: #c45a84;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border-radius: 10px;
+      margin-bottom: 30px;
     }
-    header h1 {
+    .checklist-header h1 {
       font-size: 22px;
       margin: 0;
-      font-weight: 600;
+      font-weight: 700;
     }
     .reset-btn {
       padding: 8px 16px;
-      background-color: #495057;
-      color: white;
+      background-color: #e3cbdc;
+      color: #4b2c3f;
       border: none;
       border-radius: 6px;
       font-size: 14px;
@@ -37,17 +92,16 @@
       transition: background-color 0.2s;
     }
     .reset-btn:hover {
-      background-color: #343a40;
+      background-color: #d3b4c8;
     }
+
     .container {
-      max-width: 1400px;
-      margin: 30px auto;
       padding: 0 20px;
     }
     .group-section {
-      border-radius: 12px;
       background-color: #ffffff;
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      border-radius: 12px;
       padding: 30px;
       margin-bottom: 40px;
     }
@@ -55,7 +109,7 @@
       text-align: center;
       font-size: 22px;
       margin-bottom: 30px;
-      color: #0d6efd;
+      color: #a84e6d;
     }
     .controls {
       display: flex;
@@ -67,36 +121,37 @@
     .controls input {
       padding: 10px;
       width: 200px;
-      border: 1px solid #ced4da;
+      border: 1px solid #e6cfe1;
       border-radius: 6px;
       font-size: 14px;
     }
     .controls button {
       padding: 10px 20px;
-      background-color: #0d6efd;
+      background-color: #d86a9d;
       color: white;
       border: none;
       border-radius: 6px;
       font-size: 14px;
       cursor: pointer;
-      transition: background-color 0.2s;
     }
     .controls button:hover {
-      background-color: #0b5ed7;
+      background-color: #b84c82;
     }
+
     .raid-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      flex-wrap: nowrap;
-    }
-    .raid-board {
-      background-color: #f8f9fa;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-      width: 700px;
-    }
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: nowrap; /* ✅ wrap 막기 */
+  gap: 20px;
+}
+  .raid-board {
+  background-color: #fdf5f8;
+  border-radius: 10px;
+  padding: 20px;
+  width: 48%; /* ✅ 가로폭 고정 */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
     .raid-board h3 {
       font-size: 17px;
       margin-bottom: 15px;
@@ -113,6 +168,7 @@
     }
     .dot.purple { background-color: purple; }
     .dot.yellow { background-color: gold; }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -123,8 +179,8 @@
       overflow: hidden;
     }
     th, td {
-      padding: 6px 4px;
-      border: 1px solid #dee2e6;
+      padding: 8px 6px;
+      border: 1px solid #e9ecef;
       white-space: nowrap;
       vertical-align: middle;
       text-align: center;
@@ -154,61 +210,75 @@
   </style>
 </head>
 <body>
-  <header>
-    <h1>레이드 체크리스트</h1>
-    <button class="reset-btn" onclick="resetClearStates()">클리어 상태 초기화</button>
-  </header>
-  <div class="container">
-    <div class="group-section">
-      <h2>1군</h2>
-      <div class="controls">
-        <input type="text" id="playerName1" placeholder="이름 입력" />
-        <input type="text" id="playerNick1" placeholder="마크 닉네임 입력" />
-        <button onclick="addPlayer('1')">추가</button>
-      </div>
-      <div class="raid-row">
-        <div class="raid-board">
-          <h3><span class="dot purple"></span> 테라곤</h3>
-          <table>
-            <thead><tr><th>이름</th><th>마크 닉네임</th><th>이지</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
-            <tbody id="teragonTable1"></tbody>
-          </table>
-        </div>
-        <div class="raid-board">
-          <h3><span class="dot yellow"></span> 엑소니아</h3>
-          <table>
-            <thead><tr><th>이름</th><th>마크 닉네임</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
-            <tbody id="exoniaTable1"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
 
-    <div class="group-section">
-      <h2>2군</h2>
-      <div class="controls">
-        <input type="text" id="playerName2" placeholder="이름 입력" />
-        <input type="text" id="playerNick2" placeholder="마크 닉네임 입력" />
-        <button onclick="addPlayer('2')">추가</button>
-      </div>
-      <div class="raid-row">
-        <div class="raid-board">
-          <h3><span class="dot purple"></span> 테라곤</h3>
-          <table>
-            <thead><tr><th>이름</th><th>마크 닉네임</th><th>이지</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
-            <tbody id="teragonTable2"></tbody>
-          </table>
+  <!-- 표지 -->
+  <div class="hero">
+    <h1>화양연화</h1>
+  </div>
+
+  <!-- 메뉴 -->
+  <nav>
+    <a href="#checklist">레이드 체크리스트</a>
+    <a href="#cost">레이드모금비용</a>
+  </nav>
+
+  <!-- 체크리스트 -->
+  <section id="checklist">
+    <div class="checklist-header">
+      <h1>레이드 체크리스트</h1>
+      <button class="reset-btn" onclick="resetClearStates()">클리어 상태 초기화</button>
+    </div>
+    <div class="container">
+      <div class="group-section">
+        <h2>1군</h2>
+        <div class="controls">
+          <input type="text" id="playerName1" placeholder="이름 입력" />
+          <input type="text" id="playerNick1" placeholder="마크 닉네임 입력" />
+          <button onclick="addPlayer('1')">추가</button>
         </div>
-        <div class="raid-board">
-          <h3><span class="dot yellow"></span> 엑소니아</h3>
-          <table>
-            <thead><tr><th>이름</th><th>마크 닉네임</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
-            <tbody id="exoniaTable2"></tbody>
-          </table>
+        <div class="raid-row">
+          <div class="raid-board">
+            <h3><span class="dot purple"></span> 테라곤</h3>
+            <table><thead><tr><th>이름</th><th>마크 닉네임</th><th>이지</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
+            <tbody id="teragonTable1"></tbody></table>
+          </div>
+          <div class="raid-board">
+            <h3><span class="dot yellow"></span> 엑소니아</h3>
+            <table><thead><tr><th>이름</th><th>마크 닉네임</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
+            <tbody id="exoniaTable1"></tbody></table>
+          </div>
+        </div>
+      </div>
+      <div class="group-section">
+        <h2>2군</h2>
+        <div class="controls">
+          <input type="text" id="playerName2" placeholder="이름 입력" />
+          <input type="text" id="playerNick2" placeholder="마크 닉네임 입력" />
+          <button onclick="addPlayer('2')">추가</button>
+        </div>
+        <div class="raid-row">
+          <div class="raid-board">
+            <h3><span class="dot purple"></span> 테라곤</h3>
+            <table><thead><tr><th>이름</th><th>마크 닉네임</th><th>이지</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
+            <tbody id="teragonTable2"></tbody></table>
+          </div>
+          <div class="raid-board">
+            <h3><span class="dot yellow"></span> 엑소니아</h3>
+            <table><thead><tr><th>이름</th><th>마크 닉네임</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
+            <tbody id="exoniaTable2"></tbody></table>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
+
+  <!-- 모금비용 -->
+  <section id="cost">
+    <h1>레이드 모금비용</h1>
+    <p style="text-align: center;">모금비용 관련 정보는 여기에 작성하세요!</p>
+  </section>
+
+  <!-- 기능 스크립트 -->
   <script>
     function addPlayer(side) {
       const name = document.getElementById(`playerName${side}`).value.trim();
@@ -217,24 +287,19 @@
         alert("이름과 마크 닉네임을 입력해주세요!");
         return;
       }
-
       addRow(`teragonTable${side}`, name, nick, true);
       addRow(`exoniaTable${side}`, name, nick, false);
       saveData();
-
       document.getElementById(`playerName${side}`).value = "";
       document.getElementById(`playerNick${side}`).value = "";
     }
-
     function addRow(tableId, name, nick, includeEasy, easy = false, normal = false, hard = false) {
       const table = document.getElementById(tableId);
       const newRow = document.createElement("tr");
-
       const easyCell = includeEasy ? `
         <td class="clickable easy${easy ? ' checked' : ''}" onclick="toggleCheckbox(this)">
           <input type="checkbox" ${easy ? 'checked' : ''}>
         </td>` : '';
-
       newRow.innerHTML = `
         <td>${name}</td>
         <td>${nick}</td>
@@ -249,26 +314,22 @@
       `;
       table.appendChild(newRow);
     }
-
     function toggleCheckbox(cell) {
       const checkbox = cell.querySelector('input[type="checkbox"]');
       checkbox.checked = !checkbox.checked;
       cell.classList.toggle('checked', checkbox.checked);
       saveData();
     }
-
     function deleteRow(button) {
       const row = button.closest("tr");
       row.remove();
       saveData();
     }
-
     function resetClearStates() {
       document.querySelectorAll("input[type='checkbox']").forEach(cb => cb.checked = false);
       document.querySelectorAll("td.clickable").forEach(cell => cell.classList.remove("checked"));
       saveData();
     }
-
     function saveData() {
       const data = {};
       ['teragonTable1', 'exoniaTable1', 'teragonTable2', 'exoniaTable2'].forEach(id => {
@@ -286,7 +347,6 @@
       });
       localStorage.setItem("raidData", JSON.stringify(data));
     }
-
     function loadData() {
       const data = JSON.parse(localStorage.getItem("raidData") || '{}');
       for (let id in data) {
@@ -295,8 +355,8 @@
         });
       }
     }
-
     window.addEventListener("load", loadData);
   </script>
+
 </body>
 </html>
