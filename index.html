@@ -193,9 +193,53 @@
       cursor: pointer;
       transition: background-color 0.2s;
     }
-    .easy.checked { background-color: #e6f4ea; }
-    .normal.checked { background-color: #fff7e6; }
-    .hard.checked { background-color: #fae5e8; }
+    .easy.checked {
+  background-color: #a9dfbf !important;
+  color: #1e4620;
+  font-weight: bold;
+  position: relative;
+}
+.easy.checked::after {
+  content: '✓';
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.normal.checked {
+  background-color: #ffe066 !important;
+  color: #5c4400;
+  font-weight: bold;
+  position: relative;
+}
+.normal.checked::after {
+  content: '✓';
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.hard.checked {
+  background-color: #f5b7b1 !important;
+  color: #7a2b2b;
+  font-weight: bold;
+  position: relative;
+}
+.hard.checked::after {
+  content: '✓';
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  font-weight: bold;
+}
     input[type="checkbox"] { display: none; }
     .delete-btn {
       background-color: #dc3545;
