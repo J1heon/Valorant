@@ -1,10 +1,43 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
+   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>화양연화 길드 홈페이지</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet" />
+  <script src="https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAUtDDoKC00AS0RhyeXaWCX71z8x4XmrA8",
+      authDomain: "hwayangyeonhwa-4b7c5.firebaseapp.com",
+      projectId: "hwayangyeonhwa-4b7c5",
+      storageBucket: "hwayangyeonhwa-4b7c5.appspot.com",
+      messagingSenderId: "186081597939",
+      appId: "1:186081597939:web:8af4cbb8c23ae9dbfcda86",
+      measurementId: "G-GK4Y4EW7KC"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    function saveDataToFirestore() {
+      const data = JSON.parse(localStorage.getItem("guildData") || '{}');
+      db.collection("guild").doc("sharedData").set(data)
+        .then(() => console.log("✅ 저장 완료"))
+        .catch(e => console.error("❌ 저장 실패", e));
+    }
+
+    function loadDataFromFirestore() {
+      db.collection("guild").doc("sharedData").onSnapshot(doc => {
+        if (!doc.exists) return;
+        const data = doc.data();
+        localStorage.setItem("guildData", JSON.stringify(data));
+        location.reload(); // 데이터를 불러오고 새로고침
+      });
+    }
+
+    window.addEventListener("load", loadDataFromFirestore);
+  </script>
   <style>
     .job-blade {
   background-color: #ffe5e9; /* 연한 붉은색 */
@@ -283,6 +316,10 @@
     }
     .delete-btn:hover { background-color: #c82333; }
   </style>
+  
+  <!-- Firebase SDK 불러오기 (Firebase Core + Firestore) -->
+<script src="https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js"></script>
 </head>
 <body>
 
@@ -595,61 +632,7 @@ function updateTotal() {
       document.querySelectorAll("td.clickable").forEach(cell => cell.classList.remove("checked"));
       saveData();
     }
-    function saveData() {
-  const data = {};
-
-  // ✅ 체크리스트 저장
-  ['teragonTable1', 'exoniaTable1', 'teragonTable2', 'exoniaTable2'].forEach(id => {
-    const rows = document.getElementById(id)?.querySelectorAll("tr") || [];
-    data[id] = Array.from(rows).map(row => {
-      const cells = row.querySelectorAll("td");
-      return {
-        name: cells[0]?.textContent.trim(),
-        nick: cells[1]?.textContent.trim(),
-        easy: cells.length === 6 ? cells[2].classList.contains("checked") : null,
-        normal: cells.length === 6 ? cells[3].classList.contains("checked") : cells[2].classList.contains("checked"),
-        hard: cells.length === 6 ? cells[4].classList.contains("checked") : cells[3].classList.contains("checked")
-      };
-    });
-  });
-
-  // ✅ 모금 저장
-  const fundRows = document.querySelectorAll('#fundBody tr');
-  data.fund = Array.from(fundRows).map(row => {
-    const inputs = row.querySelectorAll('input');
-    return {
-      name: inputs[0]?.value || '',
-      amount: inputs[1]?.value || ''
-    };
-  });
-
-  // ✅ 무기 저장
-  const weaponRows = document.querySelectorAll('#weaponBody tr');
-  data.weapon = Array.from(weaponRows).map(row => {
-    const inputs = row.querySelectorAll('input');
-    return {
-      weapon: inputs[0]?.value || '',
-      borrower: inputs[1]?.value || ''
-    };
-  });
-
-  // ✅ 길드원 리스트 저장
-  ['1', '2'].forEach(group => {
-    const rows = document.querySelectorAll(`#memberTable${group} tbody tr`);
-    data[`members${group}`] = Array.from(rows).map(row => {
-      const inputs = row.querySelectorAll('input');
-      return {
-        name: inputs[0]?.value || '',
-        nick: inputs[1]?.value || '',
-        job: inputs[2]?.value || ''
-      };
-    });
-  });
-
-  // ✅ 저장!
-  localStorage.setItem("guildData", JSON.stringify(data));
-}
-
+    
 
 function loadData() {
   const data = JSON.parse(localStorage.getItem("guildData") || '{}');
@@ -803,6 +786,58 @@ function toggleEdit(btn) {
 
 
 </script>
+   <script>
+    // 기존 saveData 함수 이름만 바꾸기
+    function saveData() {
+      const data = {};
+      ['teragonTable1', 'exoniaTable1', 'teragonTable2', 'exoniaTable2'].forEach(id => {
+        const rows = document.getElementById(id)?.querySelectorAll("tr") || [];
+        data[id] = Array.from(rows).map(row => {
+          const cells = row.querySelectorAll("td");
+          return {
+            name: cells[0]?.textContent.trim(),
+            nick: cells[1]?.textContent.trim(),
+            easy: cells.length === 6 ? cells[2].classList.contains("checked") : null,
+            normal: cells.length === 6 ? cells[3].classList.contains("checked") : cells[2].classList.contains("checked"),
+            hard: cells.length === 6 ? cells[4].classList.contains("checked") : cells[3].classList.contains("checked")
+          };
+        });
+      });
 
+      const fundRows = document.querySelectorAll('#fundBody tr');
+      data.fund = Array.from(fundRows).map(row => {
+        const inputs = row.querySelectorAll('input');
+        return {
+          name: inputs[0]?.value || '',
+          amount: inputs[1]?.value || ''
+        };
+      });
+
+      const weaponRows = document.querySelectorAll('#weaponBody tr');
+      data.weapon = Array.from(weaponRows).map(row => {
+        const inputs = row.querySelectorAll('input');
+        return {
+          weapon: inputs[0]?.value || '',
+          borrower: inputs[1]?.value || ''
+        };
+      });
+
+      ['1', '2'].forEach(group => {
+        const rows = document.querySelectorAll(`#memberTable${group} tbody tr`);
+        data[`members${group}`] = Array.from(rows).map(row => {
+          const inputs = row.querySelectorAll('input');
+          return {
+            name: inputs[0]?.value || '',
+            nick: inputs[1]?.value || '',
+            job: inputs[2]?.value || ''
+          };
+        });
+      });
+
+      localStorage.setItem("guildData", JSON.stringify(data));
+      saveDataToFirestore();
+    }
+  </script>
+</body>
   </body>
 </html>
