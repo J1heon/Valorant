@@ -479,11 +479,7 @@
     tbody.appendChild(row);
   }
 
-  function deleteRow(btn) {
-    btn.closest('tr').remove();
-    updateTotal();
-  }
-
+ 
  const 한글단위 = {
   '억': 100000000,
   '천만': 10000000,
@@ -582,11 +578,18 @@ function updateTotal() {
       cell.classList.toggle('checked', checkbox.checked);
       saveData();
     }
-    function deleteRow(button) {
-      const row = button.closest("tr");
-      row.remove();
-      saveData();
-    }
+  function deleteRow(button) {
+  const row = button.closest("tr");
+  row.remove();
+
+  // 모금 테이블이면 총합 갱신
+  if (document.getElementById('fundTable').contains(row)) {
+    updateTotal();
+  }
+
+  // 삭제 후 무조건 저장
+  saveData();
+}
     function resetClearStates() {
       document.querySelectorAll("input[type='checkbox']").forEach(cb => cb.checked = false);
       document.querySelectorAll("td.clickable").forEach(cell => cell.classList.remove("checked"));
