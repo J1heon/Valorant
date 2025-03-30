@@ -27,14 +27,32 @@
         .catch(e => console.error("❌ 저장 실패", e));
     }
 
-    function loadDataFromFirestore() {
-      db.collection("guild").doc("sharedData").onSnapshot(doc => {
-        if (!doc.exists) return;
-        const data = doc.data();
-        localStorage.setItem("guildData", JSON.stringify(data));
-        location.reload(); // 데이터를 불러오고 새로고침
-      });
-    }
+   function clearExistingRows() {
+  ['teragonTable1', 'exoniaTable1', 'teragonTable2', 'exoniaTable2'].forEach(id => {
+    const tbody = document.getElementById(id);
+    if (tbody) tbody.innerHTML = "";
+  });
+
+  const fundBody = document.getElementById('fundBody');
+  if (fundBody) fundBody.innerHTML = "";
+
+  const weaponBody = document.getElementById('weaponBody');
+  if (weaponBody) weaponBody.innerHTML = "";
+
+  ['memberTable1', 'memberTable2'].forEach(id => {
+    const tbody = document.querySelector(`#${id} tbody`);
+    if (tbody) tbody.innerHTML = "";
+  });
+}
+function loadDataFromFirestore() {
+  db.collection("guild").doc("sharedData").onSnapshot(doc => {
+    if (!doc.exists) return;
+    const data = doc.data();
+    localStorage.setItem("guildData", JSON.stringify(data));
+    clearExistingRows();  // 기존 데이터 지우고
+    loadData();           // 다시 불러오기
+  });
+}
 
     window.addEventListener("load", loadDataFromFirestore);
   </script>
@@ -633,7 +651,24 @@ function updateTotal() {
       saveData();
     }
     
+function clearExistingRows() {
+  ['teragonTable1', 'exoniaTable1', 'teragonTable2', 'exoniaTable2'].forEach(id => {
+    const tbody = document.getElementById(id);
+    if (tbody) tbody.innerHTML = "";
+  });
 
+  const fundBody = document.getElementById('fundBody');
+  if (fundBody) fundBody.innerHTML = "";
+
+  const weaponBody = document.getElementById('weaponBody');
+  if (weaponBody) weaponBody.innerHTML = "";
+
+  ['memberTable1', 'memberTable2'].forEach(id => {
+    const tbody = document.querySelector(`#${id} tbody`);
+    if (tbody) tbody.innerHTML = "";
+  });
+}
+    
 function loadData() {
   const data = JSON.parse(localStorage.getItem("guildData") || '{}');
 
