@@ -460,10 +460,11 @@ function updateTotal() {
 }
 
 
-  window.addEventListener('load', () => {
-    addFundRow();
-    addWeaponRow();
-  });
+ window.addEventListener('load', () => {
+  const existingData = JSON.parse(localStorage.getItem("raidData") || '{}');
+  if (!existingData.fund?.length) addFundRow();
+  if (!existingData.weapon?.length) addWeaponRow();
+});
 </script>
 
 
