@@ -704,8 +704,10 @@ function updateJobColor(input) {
       break;
   }
 
-  saveData(); // 자동 저장까지
+  // 저장은 타이핑이 끝났을 때 하게 만들기 → debounce
+  debounceSaveData();
 }
+
 
 // ✅ 이벤트 등록 (맨 아래에 유지)
 window.addEventListener("load", loadData);
@@ -713,6 +715,15 @@ window.addEventListener("load", loadData);
   </script>
 
 <script>
+
+  let saveTimeout;
+function debounceSaveData(delay = 1000) {
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(() => {
+    saveData();
+  }, delay);
+}
+
   // 길드원 리스트 행 추가
   function addMemberRow(group) {
     const tbody = document.querySelector(`#memberTable${group} tbody`);
