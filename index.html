@@ -455,7 +455,9 @@
 </section>
 
 <script>
- function addFundRow() {
+let isUpdatingFromFirestore = false;  // Firestore에서 불러오는 중인지 확인
+
+  function addFundRow() {
   const tbody = document.getElementById('fundBody');
   const row = document.createElement('tr');
   row.innerHTML = `
@@ -769,6 +771,7 @@ function toggleEdit(btn) {
    <script>
     // 기존 saveData 함수 이름만 바꾸기
     function saveData() {
+      if (isUpdatingFromFirestore) return;
       const data = {};
       ['teragonTable1', 'exoniaTable1', 'teragonTable2', 'exoniaTable2'].forEach(id => {
         const rows = document.getElementById(id)?.querySelectorAll("tr") || [];
@@ -847,14 +850,18 @@ function toggleEdit(btn) {
   };
 
   window.loadDataFromFirestore = function () {
-    onSnapshot(doc(db, "guild", "sharedData"), (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        localStorage.setItem("guildData", JSON.stringify(data));
-        clearExistingRows();  // 기존 데이터 초기화
-        loadData();           // 다시 불러오기
-      }
-    });
+   onSnapshot(doc(db, "guild", "sharedData"), (docSnap) => {
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+
+    isUpdatingFromFirestore = true; // 🔒 저장 방지 시작
+    localStorage.setItem("guildData", JSON.stringify(data));
+    clearExistingRows();
+    loadData();
+    isUpdatingFromFirestore = false; // 🔓 저장 가능해짐
+  }
+});
+
   };
 
   // 페이지 로드시 불러오기 실행
