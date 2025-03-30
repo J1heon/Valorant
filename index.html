@@ -594,13 +594,15 @@ function updateTotal() {
     }
     function saveData() {
   const data = {};
+
+  // ✅ 체크리스트 저장
   ['teragonTable1', 'exoniaTable1', 'teragonTable2', 'exoniaTable2'].forEach(id => {
     const rows = document.getElementById(id)?.querySelectorAll("tr") || [];
     data[id] = Array.from(rows).map(row => {
       const cells = row.querySelectorAll("td");
       return {
-        name: cells[0]?.textContent,
-        nick: cells[1]?.textContent,
+        name: cells[0]?.textContent.trim(),
+        nick: cells[1]?.textContent.trim(),
         easy: cells.length === 6 ? cells[2].classList.contains("checked") : null,
         normal: cells.length === 6 ? cells[3].classList.contains("checked") : cells[2].classList.contains("checked"),
         hard: cells.length === 6 ? cells[4].classList.contains("checked") : cells[3].classList.contains("checked")
@@ -608,7 +610,7 @@ function updateTotal() {
     });
   });
 
-  // ✅ 레이드 모금 저장
+  // ✅ 모금 저장
   const fundRows = document.querySelectorAll('#fundBody tr');
   data.fund = Array.from(fundRows).map(row => {
     const inputs = row.querySelectorAll('input');
@@ -618,7 +620,7 @@ function updateTotal() {
     };
   });
 
-  // ✅ 빌린 무기 저장
+  // ✅ 무기 저장
   const weaponRows = document.querySelectorAll('#weaponBody tr');
   data.weapon = Array.from(weaponRows).map(row => {
     const inputs = row.querySelectorAll('input');
@@ -628,53 +630,118 @@ function updateTotal() {
     };
   });
 
-  localStorage.setItem("raidData", JSON.stringify(data));
+  // ✅ 길드원 리스트 저장
+  ['1', '2'].forEach(group => {
+    const rows = document.querySelectorAll(`#memberTable${group} tbody tr`);
+    data[`members${group}`] = Array.from(rows).map(row => {
+      const inputs = row.querySelectorAll('input');
+      return {
+        name: inputs[0]?.value || '',
+        nick: inputs[1]?.value || '',
+        job: inputs[2]?.value || ''
+      };
+    });
+  });
+
+  // ✅ 저장!
+  localStorage.setItem("guildData", JSON.stringify(data));
 }
 
-function loadData() {
-  const data = JSON.parse(localStorage.getItem("raidData") || '{}');
 
+function loadData() {
+  const data = JSON.parse(localStorage.getItem("guildData") || '{}');
+
+  // ✅ 체크리스트 복원
   ['teragonTable1', 'exoniaTable1', 'teragonTable2', 'exoniaTable2'].forEach(id => {
     data[id]?.forEach(entry => {
       addRow(id, entry.name, entry.nick, entry.easy !== null, entry.easy, entry.normal, entry.hard);
     });
   });
 
-  // ✅ 레이드 모금 복원
- if (data.fund?.length) {
-    data.fund.forEach(entry => {
-      const tbody = document.getElementById('fundBody');
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td><input type="text" value="${entry.name}" placeholder="닉네임" /></td>
-        <td><input type="text" value="${entry.amount}" class="money" placeholder="금액" oninput="updateTotal()" /></td>
-        <td class="money-display"></td>
-        <td><button onclick="deleteRow(this)" class="delete-btn">삭제</button></td>
-      `;
-      tbody.appendChild(row);
-    });
-  } else {
-    addFundRow(); // ✅ 없으면 기본 줄 추가
-  }
-  // ✅ 빌린 무기 복원
+ // ✅ 모금 복원
+const fundBody = document.getElementById('fundBody');
+if (data.fund?.length) {
+  data.fund.forEach(entry => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><input type="text" value="${entry.name}" placeholder="닉네임" /></td>
+      <td><input type="text" value="${entry.amount}" class="money" placeholder="금액" oninput="updateTotal()" /></td>
+      <td class="money-display"></td>
+      <td><button onclick="deleteRow(this)" class="delete-btn">삭제</button></td>
+    `;
+    fundBody.appendChild(row);
+  });
+
+  updateTotal(); // ✅ 총합 계산 다시!
+} else {
+  addFundRow(); // ✅ 데이터 없을 때만 기본 행 1개 추가
+}
+  // ✅ 무기 복원
+  const weaponBody = document.getElementById('weaponBody');
   if (data.weapon?.length) {
     data.weapon.forEach(entry => {
-      const tbody = document.getElementById('weaponBody');
       const row = document.createElement('tr');
       row.innerHTML = `
         <td><input type="text" value="${entry.weapon}" placeholder="무기 이름 (주인)" /></td>
         <td><input type="text" value="${entry.borrower}" placeholder="빌린 사람" /></td>
         <td><button onclick="deleteRow(this)" class="delete-btn">삭제</button></td>
       `;
-      tbody.appendChild(row);
+      weaponBody.appendChild(row);
     });
   } else {
-    addWeaponRow(); // ✅ 없으면 기본 줄 추가
+    addWeaponRow(); // 없으면 기본 행 추가
   }
 
-  updateTotal(); // ✅ 총합 갱신
+  // ✅ 길드원 리스트 복원
+  ['1', '2'].forEach(group => {
+    const tbody = document.querySelector(`#memberTable${group} tbody`);
+    data[`members${group}`]?.forEach(member => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><input type="text" value="${member.name}" oninput="updateJobColor(this)" /></td>
+        <td><input type="text" value="${member.nick}" /></td>
+        <td><input type="text" value="${member.job}" oninput="updateJobColor(this)" /></td>
+        <td>
+          <button class="move-btn" onclick="moveRow(this, -1)">↑</button>
+          <button class="move-btn" onclick="moveRow(this, 1)">↓</button>
+        </td>
+        <td><button class="edit-btn" onclick="toggleEdit(this)">수정</button></td>
+        <td><button class="delete-btn" onclick="deleteRow(this)">삭제</button></td>
+      `;
+      tbody.appendChild(row);
+      updateJobColor(row.querySelectorAll('input')[2]);
+    });
+  });
+
+  updateTotal(); // 총합도 갱신
 }
-   window.addEventListener("load", loadData);
+function updateJobColor(input) {
+  const value = input.value.trim();
+  const row = input.closest('tr');
+
+  row.classList.remove('job-frost', 'job-blade', 'job-warrior', 'job-mage');
+
+  switch (value) {
+    case '프로스트':
+      row.classList.add('job-frost');
+      break;
+    case '블레이드':
+      row.classList.add('job-blade');
+      break;
+    case '워리어':
+      row.classList.add('job-warrior');
+      break;
+    case '메이지':
+      row.classList.add('job-mage');
+      break;
+  }
+
+  saveData(); // 자동 저장까지
+}
+
+// ✅ 이벤트 등록 (맨 아래에 유지)
+window.addEventListener("load", loadData);
+
   </script>
 
 <script>
@@ -717,79 +784,21 @@ function loadData() {
   }
 
   // 수정/저장 toggle
-  function toggleEdit(btn) {
-    const row = btn.closest('tr');
-    const inputs = row.querySelectorAll('input');
-    const editing = btn.textContent === '수정';
+function toggleEdit(btn) {
+  const row = btn.closest('tr');
+  const inputs = row.querySelectorAll('input');
+  const isEditing = btn.textContent === '수정';
 
-    inputs.forEach(input => input.readOnly = !editing);
-    btn.textContent = editing ? '저장' : '수정';
+  inputs.forEach(input => input.readOnly = !isEditing);
+  btn.textContent = isEditing ? '저장' : '수정';
 
-    if (editing) updateJobColor(inputs[2]); // 직업 컬러 갱신
-    saveData(); // 수정 후 데이터 저장
+  if (!isEditing) {
+    updateJobColor(inputs[2]); // 👉 저장할 때 색상 갱신
+    saveData(); // 수정 완료 후 저장
   }
+}
 
-  // 직업에 따라 색상 적용
-  function updateJobColor(input) {
-    const row = input.closest('tr');
-    const jobInput = row.querySelectorAll('input')[2];
-    const job = jobInput.value.trim().toLowerCase();
 
-    row.classList.remove('job-blade', 'job-frost', 'job-mage', 'job-warrior');
-    if (job.includes('블레이드')) row.classList.add('job-blade');
-    else if (job.includes('프로스트')) row.classList.add('job-frost');
-    else if (job.includes('메이지')) row.classList.add('job-mage');
-    else if (job.includes('워리어')) row.classList.add('job-warrior');
-    saveData(); // 색상 적용 후 저장
-  }
-
-  // 데이터 저장
-  function saveData() {
-    const data = {};
-    // 1군, 2군 데이터 저장
-    ['1', '2'].forEach(group => {
-      const rows = document.querySelector(`#memberTable${group} tbody`).children;
-      data[`members${group}`] = Array.from(rows).map(row => {
-        const cells = row.querySelectorAll('input');
-        return {
-          name: cells[0].value,
-          nick: cells[1].value,
-          job: cells[2].value
-        };
-      });
-    });
-    // 로컬스토리지에 저장
-    localStorage.setItem("guildMembers", JSON.stringify(data));
-  }
-
-  // 데이터 불러오기
-  function loadData() {
-    const data = JSON.parse(localStorage.getItem("guildMembers")) || {};
-
-    // 1군, 2군 테이블에 데이터 복원
-    ['1', '2'].forEach(group => {
-      const tbody = document.querySelector(`#memberTable${group} tbody`);
-      data[`members${group}`]?.forEach(member => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td><input type="text" value="${member.name}" oninput="updateJobColor(this)" /></td>
-          <td><input type="text" value="${member.nick}" /></td>
-          <td><input type="text" value="${member.job}" oninput="updateJobColor(this)" /></td>
-          <td>
-            <button class="move-btn" onclick="moveRow(this, -1)">↑</button>
-            <button class="move-btn" onclick="moveRow(this, 1)">↓</button>
-          </td>
-          <td><button class="edit-btn" onclick="toggleEdit(this)">수정</button></td>
-          <td><button class="delete-btn" onclick="this.closest('tr').remove()">삭제</button></td>
-        `;
-        tbody.appendChild(row);
-        updateJobColor(row.querySelectorAll('input')[2]); // 직업에 맞는 색상 적용
-      });
-    });
-  }
-
-  // 페이지 로드 시 데이터 불러오기
-  window.addEventListener('load', loadData);
 </script>
 
   </body>
