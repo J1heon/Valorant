@@ -5,57 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>화양연화 길드 홈페이지</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet" />
-  <script src="https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAUtDDoKC00AS0RhyeXaWCX71z8x4XmrA8",
-      authDomain: "hwayangyeonhwa-4b7c5.firebaseapp.com",
-      projectId: "hwayangyeonhwa-4b7c5",
-      storageBucket: "hwayangyeonhwa-4b7c5.appspot.com",
-      messagingSenderId: "186081597939",
-      appId: "1:186081597939:web:8af4cbb8c23ae9dbfcda86",
-      measurementId: "G-GK4Y4EW7KC"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
-    function saveDataToFirestore() {
-      const data = JSON.parse(localStorage.getItem("guildData") || '{}');
-      db.collection("guild").doc("sharedData").set(data)
-        .then(() => console.log("✅ 저장 완료"))
-        .catch(e => console.error("❌ 저장 실패", e));
-    }
-
-   function clearExistingRows() {
-  ['teragonTable1', 'exoniaTable1', 'teragonTable2', 'exoniaTable2'].forEach(id => {
-    const tbody = document.getElementById(id);
-    if (tbody) tbody.innerHTML = "";
-  });
-
-  const fundBody = document.getElementById('fundBody');
-  if (fundBody) fundBody.innerHTML = "";
-
-  const weaponBody = document.getElementById('weaponBody');
-  if (weaponBody) weaponBody.innerHTML = "";
-
-  ['memberTable1', 'memberTable2'].forEach(id => {
-    const tbody = document.querySelector(`#${id} tbody`);
-    if (tbody) tbody.innerHTML = "";
-  });
-}
-function loadDataFromFirestore() {
-  db.collection("guild").doc("sharedData").onSnapshot(doc => {
-    if (!doc.exists) return;
-    const data = doc.data();
-    localStorage.setItem("guildData", JSON.stringify(data));
-    clearExistingRows();  // 기존 데이터 지우고
-    loadData();           // 다시 불러오기
-  });
-}
-
-    window.addEventListener("load", loadDataFromFirestore);
-  </script>
   <style>
     .job-blade {
   background-color: #ffe5e9; /* 연한 붉은색 */
@@ -334,10 +283,6 @@ function loadDataFromFirestore() {
     }
     .delete-btn:hover { background-color: #c82333; }
   </style>
-  
-  <!-- Firebase SDK 불러오기 (Firebase Core + Firestore) -->
-<script src="https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js"></script>
 </head>
 <body>
 
@@ -873,6 +818,48 @@ function toggleEdit(btn) {
       saveDataToFirestore();
     }
   </script>
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAUtDDoKC00AS0RhyeXaWCX71z8x4XmrA8",
+    authDomain: "hwayangyeonhwa-4b7c5.firebaseapp.com",
+    projectId: "hwayangyeonhwa-4b7c5",
+    storageBucket: "hwayangyeonhwa-4b7c5.appspot.com",
+    messagingSenderId: "186081597939",
+    appId: "1:186081597939:web:8af4cbb8c23ae9dbfcda86",
+    measurementId: "G-GK4Y4EW7KC"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // 전역에서 사용할 수 있도록 window에 등록
+  window.saveDataToFirestore = async function () {
+    const data = JSON.parse(localStorage.getItem("guildData") || '{}');
+    try {
+      await setDoc(doc(db, "guild", "sharedData"), data);
+      console.log("✅ 저장 완료");
+    } catch (e) {
+      console.error("❌ 저장 실패", e);
+    }
+  };
+
+  window.loadDataFromFirestore = function () {
+    onSnapshot(doc(db, "guild", "sharedData"), (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        localStorage.setItem("guildData", JSON.stringify(data));
+        clearExistingRows();  // 기존 데이터 초기화
+        loadData();           // 다시 불러오기
+      }
+    });
+  };
+
+  // 페이지 로드시 불러오기 실행
+  window.addEventListener("load", loadDataFromFirestore);
+</script>
 </body>
   </body>
 </html>
