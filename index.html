@@ -293,10 +293,153 @@
 
   <!-- 메뉴 -->
   <nav>
+    <a href="#notice-board">공지사항</a>
     <a href="#members">길드원 리스트</a>
     <a href="#checklist">레이드 체크리스트</a>
     <a href="#cost">레이드 모금</a>
   </nav>
+<section id="notice-board">
+
+  <!-- 길드 공지사항 섹션 -->
+<section id="notice-board" style="padding: 40px; max-width: 800px; margin: 0 auto; font-family: 'Noto Sans KR', sans-serif;">
+  <h2 style="font-size: 28px; font-weight: bold; margin-bottom: 20px; text-align: center;">📢 길드 공지사항</h2>
+
+  <button id="addNoticeBtn" style="display: block; margin: 0 auto 20px auto; padding: 10px 20px; font-size: 14px; border: none; border-radius: 5px; background-color: #f48fb1; color: white; cursor: pointer;">+ 새 공지 작성</button>
+
+  <div id="noticeFormContainer" style="display: none; margin-bottom: 30px;">
+    <input id="noticeTitle" type="text" placeholder="제목" style="width: 100%; padding: 10px; margin-bottom: 10px; font-size: 14px;">
+    <textarea id="noticeContent" placeholder="내용" style="width: 100%; height: 120px; padding: 10px; font-size: 14px;"></textarea>
+    <button id="saveNoticeBtn" style="margin-top: 10px; padding: 10px 15px; background-color: #ce93d8; border: none; color: white; cursor: pointer; border-radius: 5px;">저장</button>
+    <button id="cancelEditBtn" style="margin-left: 10px; padding: 10px 15px; background-color: #b0bec5; border: none; color: white; cursor: pointer; border-radius: 5px;">취소</button>
+  </div>
+
+  <div id="noticeList"></div>
+</section>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+     apiKey: "AIzaSyAUtDDoKC00AS0RhyeXaWCX71z8x4XmrA8",
+    authDomain: "hwayangyeonhwa-4b7c5.firebaseapp.com",
+    projectId: "hwayangyeonhwa-4b7c5",
+    storageBucket: "hwayangyeonhwa-4b7c5.appspot.com",
+    messagingSenderId: "186081597939",
+    appId: "1:186081597939:web:8af4cbb8c23ae9dbfcda86",
+    measurementId: "G-GK4Y4EW7KC"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const noticeRef = collection(db, "notices");
+
+  const noticeList = document.getElementById("noticeList");
+  const addNoticeBtn = document.getElementById("addNoticeBtn");
+  const noticeFormContainer = document.getElementById("noticeFormContainer");
+  const saveNoticeBtn = document.getElementById("saveNoticeBtn");
+  const cancelEditBtn = document.getElementById("cancelEditBtn");
+  const noticeTitle = document.getElementById("noticeTitle");
+  const noticeContent = document.getElementById("noticeContent");
+
+  let editingId = null;
+
+  function renderNotice(docData, id) {
+    const wrapper = document.createElement("div");
+    wrapper.style.border = "1px solid #ddd";
+    wrapper.style.borderRadius = "10px";
+    wrapper.style.padding = "15px";
+    wrapper.style.marginBottom = "15px";
+    wrapper.style.backgroundColor = "#fce4ec";
+
+    const title = document.createElement("h3");
+    title.textContent = docData.title;
+    title.style.marginBottom = "10px";
+
+    const content = document.createElement("p");
+    content.textContent = docData.content;
+    content.style.whiteSpace = "pre-wrap";
+
+    const btnWrapper = document.createElement("div");
+    btnWrapper.style.marginTop = "10px";
+
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "수정";
+    editBtn.style.marginRight = "10px";
+    editBtn.style.backgroundColor = "#ce93d8";
+    editBtn.style.border = "none";
+    editBtn.style.color = "white";
+    editBtn.style.padding = "5px 10px";
+    editBtn.style.cursor = "pointer";
+    editBtn.style.borderRadius = "5px";
+    editBtn.onclick = () => {
+      noticeTitle.value = docData.title;
+      noticeContent.value = docData.content;
+      noticeFormContainer.style.display = "block";
+      editingId = id;
+    };
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "삭제";
+    deleteBtn.style.backgroundColor = "#ef9a9a";
+    deleteBtn.style.border = "none";
+    deleteBtn.style.color = "white";
+    deleteBtn.style.padding = "5px 10px";
+    deleteBtn.style.cursor = "pointer";
+    deleteBtn.style.borderRadius = "5px";
+    deleteBtn.onclick = async () => {
+      await deleteDoc(doc(db, "notices", id));
+    };
+
+    btnWrapper.appendChild(editBtn);
+    btnWrapper.appendChild(deleteBtn);
+
+    wrapper.appendChild(title);
+    wrapper.appendChild(content);
+    wrapper.appendChild(btnWrapper);
+
+    noticeList.appendChild(wrapper);
+  }
+
+  addNoticeBtn.onclick = () => {
+    noticeFormContainer.style.display = "block";
+    noticeTitle.value = "";
+    noticeContent.value = "";
+    editingId = null;
+  };
+
+  cancelEditBtn.onclick = () => {
+    noticeFormContainer.style.display = "none";
+    noticeTitle.value = "";
+    noticeContent.value = "";
+    editingId = null;
+  };
+
+  saveNoticeBtn.onclick = async () => {
+    const title = noticeTitle.value.trim();
+    const content = noticeContent.value.trim();
+    if (!title || !content) return;
+
+    if (editingId) {
+      await updateDoc(doc(db, "notices", editingId), { title, content });
+    } else {
+      await addDoc(noticeRef, { title, content });
+    }
+
+    noticeFormContainer.style.display = "none";
+    noticeTitle.value = "";
+    noticeContent.value = "";
+    editingId = null;
+  };
+
+  onSnapshot(query(noticeRef, orderBy("title", "desc")), (snapshot) => {
+    noticeList.innerHTML = "";
+    snapshot.forEach((doc) => {
+      renderNotice(doc.data(), doc.id);
+    });
+  });
+</script>
+
 <section id="members">
   <h1>길드원 리스트</h1>
   <div style="display: flex; gap: 40px; flex-wrap: nowrap; justify-content: center; align-items: flex-start;">
