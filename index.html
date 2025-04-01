@@ -316,6 +316,130 @@
   <div id="noticeList"></div>
 </section>
 
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+     apiKey: "AIzaSyAUtDDoKC00AS0RhyeXaWCX71z8x4XmrA8",
+    authDomain: "hwayangyeonhwa-4b7c5.firebaseapp.com",
+    projectId: "hwayangyeonhwa-4b7c5",
+    storageBucket: "hwayangyeonhwa-4b7c5.appspot.com",
+    messagingSenderId: "186081597939",
+    appId: "1:186081597939:web:8af4cbb8c23ae9dbfcda86",
+    measurementId: "G-GK4Y4EW7KC"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const noticeRef = collection(db, "notices");
+
+  const noticeList = document.getElementById("noticeList");
+  const addNoticeBtn = document.getElementById("addNoticeBtn");
+  const noticeFormContainer = document.getElementById("noticeFormContainer");
+  const saveNoticeBtn = document.getElementById("saveNoticeBtn");
+  const cancelEditBtn = document.getElementById("cancelEditBtn");
+  const noticeTitle = document.getElementById("noticeTitle");
+  const noticeContent = document.getElementById("noticeContent");
+
+  let editingId = null;
+
+  function renderNotice(docData, id) {
+    const wrapper = document.createElement("div");
+    wrapper.style.border = "1px solid #ddd";
+    wrapper.style.borderRadius = "10px";
+    wrapper.style.padding = "15px";
+    wrapper.style.marginBottom = "15px";
+    wrapper.style.backgroundColor = "#fce4ec";
+
+    const title = document.createElement("h3");
+    title.textContent = docData.title;
+    title.style.marginBottom = "10px";
+
+    const content = document.createElement("p");
+    content.textContent = docData.content;
+    content.style.whiteSpace = "pre-wrap";
+
+    const btnWrapper = document.createElement("div");
+    btnWrapper.style.marginTop = "10px";
+
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "수정";
+    editBtn.style.marginRight = "10px";
+    editBtn.style.backgroundColor = "#ce93d8";
+    editBtn.style.border = "none";
+    editBtn.style.color = "white";
+    editBtn.style.padding = "5px 10px";
+    editBtn.style.cursor = "pointer";
+    editBtn.style.borderRadius = "5px";
+    editBtn.onclick = () => {
+      noticeTitle.value = docData.title;
+      noticeContent.value = docData.content;
+      noticeFormContainer.style.display = "block";
+      editingId = id;
+    };
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "삭제";
+    deleteBtn.style.backgroundColor = "#ef9a9a";
+    deleteBtn.style.border = "none";
+    deleteBtn.style.color = "white";
+    deleteBtn.style.padding = "5px 10px";
+    deleteBtn.style.cursor = "pointer";
+    deleteBtn.style.borderRadius = "5px";
+    deleteBtn.onclick = async () => {
+      await deleteDoc(doc(db, "notices", id));
+    };
+
+    btnWrapper.appendChild(editBtn);
+    btnWrapper.appendChild(deleteBtn);
+
+    wrapper.appendChild(title);
+    wrapper.appendChild(content);
+    wrapper.appendChild(btnWrapper);
+
+    noticeList.appendChild(wrapper);
+  }
+
+  addNoticeBtn.onclick = () => {
+    noticeFormContainer.style.display = "block";
+    noticeTitle.value = "";
+    noticeContent.value = "";
+    editingId = null;
+  };
+
+  cancelEditBtn.onclick = () => {
+    noticeFormContainer.style.display = "none";
+    noticeTitle.value = "";
+    noticeContent.value = "";
+    editingId = null;
+  };
+
+  saveNoticeBtn.onclick = async () => {
+    const title = noticeTitle.value.trim();
+    const content = noticeContent.value.trim();
+    if (!title || !content) return;
+
+    if (editingId) {
+      await updateDoc(doc(db, "notices", editingId), { title, content });
+    } else {
+      await addDoc(noticeRef, { title, content });
+    }
+
+    noticeFormContainer.style.display = "none";
+    noticeTitle.value = "";
+    noticeContent.value = "";
+    editingId = null;
+  };
+
+  onSnapshot(query(noticeRef, orderBy("title", "desc")), (snapshot) => {
+    noticeList.innerHTML = "";
+    snapshot.forEach((doc) => {
+      renderNotice(doc.data(), doc.id);
+    });
+  });
+</script>
+
 <section id="members">
   <h1>길드원 리스트</h1>
   <div style="display: flex; gap: 40px; flex-wrap: nowrap; justify-content: center; align-items: flex-start;">
@@ -330,6 +454,7 @@
             <th>마크 닉네임</th>
             <th>직업</th>
             <th>↑↓</th>
+            <th>수정</th>
             <th>삭제</th>
           </tr>
         </thead>
@@ -352,6 +477,7 @@
             <th>마크 닉네임</th>
             <th>직업</th>
             <th>↑↓</th>
+            <th>수정</th>
             <th>삭제</th>
           </tr>
         </thead>
@@ -375,30 +501,40 @@
     <div class="container">
       <div class="group-section">
         <h2>1군</h2>
+        <div class="controls">
+          <input type="text" id="playerName1" placeholder="이름 입력" />
+          <input type="text" id="playerNick1" placeholder="마크 닉네임 입력" />
+          <button onclick="addPlayer('1')">추가</button>
+        </div>
         <div class="raid-row">
           <div class="raid-board">
             <h3><span class="dot purple"></span> 테라곤</h3>
-            <table><thead><tr><th>이름</th><th>마크 닉네임</th><th>이지</th><th>노말</th><th>하드</th></tr></thead>
+            <table><thead><tr><th>이름</th><th>마크 닉네임</th><th>이지</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
             <tbody id="teragonTable1"></tbody></table>
           </div>
           <div class="raid-board">
             <h3><span class="dot yellow"></span> 엑소니아</h3>
-            <table><thead><tr><th>이름</th><th>마크 닉네임</th><th>노말</th><th>하드</th></tr></thead>
+            <table><thead><tr><th>이름</th><th>마크 닉네임</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
             <tbody id="exoniaTable1"></tbody></table>
           </div>
         </div>
       </div>
       <div class="group-section">
         <h2>2군</h2>
+        <div class="controls">
+          <input type="text" id="playerName2" placeholder="이름 입력" />
+          <input type="text" id="playerNick2" placeholder="마크 닉네임 입력" />
+          <button onclick="addPlayer('2')">추가</button>
+        </div>
         <div class="raid-row">
           <div class="raid-board">
             <h3><span class="dot purple"></span> 테라곤</h3>
-            <table><thead><tr><th>이름</th><th>마크 닉네임</th><th>이지</th><th>노말</th><th>하드</th></tr></thead>
+            <table><thead><tr><th>이름</th><th>마크 닉네임</th><th>이지</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
             <tbody id="teragonTable2"></tbody></table>
           </div>
           <div class="raid-board">
             <h3><span class="dot yellow"></span> 엑소니아</h3>
-            <table><thead><tr><th>이름</th><th>마크 닉네임</th><th>노말</th><th>하드</th></tr></thead>
+            <table><thead><tr><th>이름</th><th>마크 닉네임</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
             <tbody id="exoniaTable2"></tbody></table>
           </div>
         </div>
@@ -547,34 +683,40 @@ function updateTotal() {
 
   <!-- 기능 스크립트 -->
   <script>
+    function addPlayer(side) {
+      const name = document.getElementById(`playerName${side}`).value.trim();
+      const nick = document.getElementById(`playerNick${side}`).value.trim();
+      if (!name || !nick) {
+        alert("이름과 마크 닉네임을 입력해주세요!");
+        return;
+      }
       addRow(`teragonTable${side}`, name, nick, true);
       addRow(`exoniaTable${side}`, name, nick, false);
       saveData();
       document.getElementById(`playerName${side}`).value = "";
       document.getElementById(`playerNick${side}`).value = "";
     }
-function addRow(tableId, name, nick, includeEasy, easy = false, normal = false, hard = false) {
-  const table = document.getElementById(tableId);
-  const newRow = document.createElement("tr");
-  const easyCell = includeEasy ? `
-    <td class="clickable easy${easy ? ' checked' : ''}" onclick="toggleCheckbox(this)">
-      <input type="checkbox" ${easy ? 'checked' : ''}>
-    </td>` : '';
-  newRow.innerHTML = `
-    <td>${name}</td>
-    <td>${nick}</td>
-    ${easyCell}
-    <td class="clickable normal${normal ? ' checked' : ''}" onclick="toggleCheckbox(this)">
-      <input type="checkbox" ${normal ? 'checked' : ''}>
-    </td>
-    <td class="clickable hard${hard ? ' checked' : ''}" onclick="toggleCheckbox(this)">
-      <input type="checkbox" ${hard ? 'checked' : ''}>
-    </td>
-    <td><button class="delete-btn" onclick="deleteRow(this)">삭제</button></td>
-  `;
-  table.appendChild(newRow);
-}
-
+    function addRow(tableId, name, nick, includeEasy, easy = false, normal = false, hard = false) {
+      const table = document.getElementById(tableId);
+      const newRow = document.createElement("tr");
+      const easyCell = includeEasy ? `
+        <td class="clickable easy${easy ? ' checked' : ''}" onclick="toggleCheckbox(this)">
+          <input type="checkbox" ${easy ? 'checked' : ''}>
+        </td>` : '';
+      newRow.innerHTML = `
+        <td>${name}</td>
+        <td>${nick}</td>
+        ${easyCell}
+        <td class="clickable normal${normal ? ' checked' : ''}" onclick="toggleCheckbox(this)">
+          <input type="checkbox" ${normal ? 'checked' : ''}>
+        </td>
+        <td class="clickable hard${hard ? ' checked' : ''}" onclick="toggleCheckbox(this)">
+          <input type="checkbox" ${hard ? 'checked' : ''}>
+        </td>
+        <td><button class="delete-btn" onclick="deleteRow(this)">삭제</button></td>
+      `;
+      table.appendChild(newRow);
+    }
     function toggleCheckbox(cell) {
       const checkbox = cell.querySelector('input[type="checkbox"]');
       checkbox.checked = !checkbox.checked;
@@ -674,6 +816,7 @@ if (data.fund?.length) {
           <button class="move-btn" onclick="moveRow(this, -1)">↑</button>
           <button class="move-btn" onclick="moveRow(this, 1)">↓</button>
         </td>
+        <td><button class="edit-btn" onclick="toggleEdit(this)">수정</button></td>
         <td><button class="delete-btn" onclick="deleteRow(this)">삭제</button></td>
       `;
       tbody.appendChild(row);
@@ -737,6 +880,7 @@ function debounceSaveData(delay = 1000) {
         <button class="move-btn" onclick="moveRow(this, -1)">↑</button>
         <button class="move-btn" onclick="moveRow(this, 1)">↓</button>
       </td>
+      <td><button class="edit-btn" onclick="toggleEdit(this)">수정</button></td>
       <td><button class="delete-btn" onclick="deleteRow(this)">삭제</button></td>
     `;
     tbody.appendChild(row);
@@ -760,6 +904,22 @@ function debounceSaveData(delay = 1000) {
     }
     saveData(); // 이동 후 데이터 저장
   }
+
+  // 수정/저장 toggle
+function toggleEdit(btn) {
+  const row = btn.closest('tr');
+  const inputs = row.querySelectorAll('input');
+  const isEditing = btn.textContent === '수정';
+
+  inputs.forEach(input => input.readOnly = !isEditing);
+  btn.textContent = isEditing ? '저장' : '수정';
+
+  if (!isEditing) {
+    updateJobColor(inputs[2]); // 👉 저장할 때 색상 갱신
+    saveData(); // 수정 완료 후 저장
+  }
+}
+
 
 </script>
    <script>
@@ -815,23 +975,10 @@ function debounceSaveData(delay = 1000) {
       saveDataToFirestore();
     }
   </script>
- <!-- ✅ 통합된 Firebase Firestore 코드 -->
-<script type="module">
+  <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
-  import {
-    getFirestore,
-    collection,
-    addDoc,
-    deleteDoc,
-    doc,
-    updateDoc,
-    onSnapshot,
-    query,
-    orderBy,
-    setDoc
-  } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
 
-  // ✅ Firebase 설정 - 한 번만 선언
   const firebaseConfig = {
     apiKey: "AIzaSyAUtDDoKC00AS0RhyeXaWCX71z8x4XmrA8",
     authDomain: "hwayangyeonhwa-4b7c5.firebaseapp.com",
@@ -845,119 +992,7 @@ function debounceSaveData(delay = 1000) {
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // ✅ 공지사항 Firestore 연동
-  const noticeRef = collection(db, "notices");
-  const noticeList = document.getElementById("noticeList");
-  const addNoticeBtn = document.getElementById("addNoticeBtn");
-  const noticeFormContainer = document.getElementById("noticeFormContainer");
-  const saveNoticeBtn = document.getElementById("saveNoticeBtn");
-  const cancelEditBtn = document.getElementById("cancelEditBtn");
-  const noticeTitle = document.getElementById("noticeTitle");
-  const noticeContent = document.getElementById("noticeContent");
-
-  let editingId = null;
-
-  function renderNotice(docData, id) {
-    const wrapper = document.createElement("div");
-    wrapper.style.border = "1px solid #ddd";
-    wrapper.style.borderRadius = "10px";
-    wrapper.style.padding = "15px";
-    wrapper.style.marginBottom = "15px";
-    wrapper.style.backgroundColor = "#fce4ec";
-
-    const title = document.createElement("h3");
-    title.textContent = docData.title;
-    title.style.marginBottom = "10px";
-
-    const content = document.createElement("p");
-    content.textContent = docData.content;
-    content.style.whiteSpace = "pre-wrap";
-
-    const btnWrapper = document.createElement("div");
-    btnWrapper.style.marginTop = "10px";
-
-    const editBtn = document.createElement("button");
-    editBtn.textContent = "수정";
-    editBtn.style.marginRight = "10px";
-    editBtn.style.backgroundColor = "#ce93d8";
-    editBtn.style.border = "none";
-    editBtn.style.color = "white";
-    editBtn.style.padding = "5px 10px";
-    editBtn.style.cursor = "pointer";
-    editBtn.style.borderRadius = "5px";
-    editBtn.onclick = () => {
-      noticeTitle.value = docData.title;
-      noticeContent.value = docData.content;
-      noticeFormContainer.style.display = "block";
-      editingId = id;
-    };
-
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "삭제";
-    deleteBtn.style.backgroundColor = "#ef9a9a";
-    deleteBtn.style.border = "none";
-    deleteBtn.style.color = "white";
-    deleteBtn.style.padding = "5px 10px";
-    deleteBtn.style.cursor = "pointer";
-    deleteBtn.style.borderRadius = "5px";
-    deleteBtn.onclick = async () => {
-      await deleteDoc(doc(db, "notices", id));
-    };
-
-    btnWrapper.appendChild(editBtn);
-    btnWrapper.appendChild(deleteBtn);
-
-    wrapper.appendChild(title);
-    wrapper.appendChild(content);
-    wrapper.appendChild(btnWrapper);
-
-    noticeList.appendChild(wrapper);
-  }
-
-  addNoticeBtn.onclick = () => {
-    noticeFormContainer.style.display = "block";
-    noticeTitle.value = "";
-    noticeContent.value = "";
-    editingId = null;
-  };
-
-  cancelEditBtn.onclick = () => {
-    noticeFormContainer.style.display = "none";
-    noticeTitle.value = "";
-    noticeContent.value = "";
-    editingId = null;
-  };
-
-  saveNoticeBtn.onclick = async () => {
-    const title = noticeTitle.value.trim();
-    const content = noticeContent.value.trim();
-    if (!title || !content) return;
-
-    if (editingId) {
-      await updateDoc(doc(db, "notices", editingId), { title, content });
-    } else {
-      await addDoc(noticeRef, {
-        title,
-        content,
-        createdAt: Date.now()  // ✅ 정렬용 필드 추가 (선택 사항)
-      });
-    }
-
-    noticeFormContainer.style.display = "none";
-    noticeTitle.value = "";
-    noticeContent.value = "";
-    editingId = null;
-  };
-
-  // ✅ 최신순 정렬
-  onSnapshot(query(noticeRef, orderBy("createdAt", "desc")), (snapshot) => {
-    noticeList.innerHTML = "";
-    snapshot.forEach((doc) => {
-      renderNotice(doc.data(), doc.id);
-    });
-  });
-
-  // ✅ 체크리스트 데이터 저장 (공용)
+  // 전역에서 사용할 수 있도록 window에 등록
   window.saveDataToFirestore = async function () {
     const data = JSON.parse(localStorage.getItem("guildData") || '{}');
     try {
@@ -969,18 +1004,21 @@ function debounceSaveData(delay = 1000) {
   };
 
   window.loadDataFromFirestore = function () {
-    onSnapshot(doc(db, "guild", "sharedData"), (docSnap) => {
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        isUpdatingFromFirestore = true;
-        localStorage.setItem("guildData", JSON.stringify(data));
-        clearExistingRows();
-        loadData();
-        isUpdatingFromFirestore = false;
-      }
-    });
+   onSnapshot(doc(db, "guild", "sharedData"), (docSnap) => {
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+
+    isUpdatingFromFirestore = true; // 🔒 저장 방지 시작
+    localStorage.setItem("guildData", JSON.stringify(data));
+    clearExistingRows();
+    loadData();
+    isUpdatingFromFirestore = false; // 🔓 저장 가능해짐
+  }
+});
+
   };
 
+  // 페이지 로드시 불러오기 실행
   window.addEventListener("load", loadDataFromFirestore);
 </script>
 </body>
