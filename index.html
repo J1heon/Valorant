@@ -1,1026 +1,465 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>화양연화 길드 홈페이지</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet" />
-  <style>
-    .job-blade {
-  background-color: #ffe5e9; /* 연한 붉은색 */
+  <meta charset="UTF-8">
+  <title>발로란트 내전 도우미</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard@1.3.8/dist/web/static/pretendard.css">
+<style>
+  body {
+  font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+  background-color: #f5f7fa;
+  padding: 40px;
+  margin: 0;
+  color: #333;
 }
-.job-frost {
-  background-color: #e5f0ff; /* 연한 파란색 */
-}
-.job-mage {
-  background-color: #f3e5ff; /* 연한 보라색 */
-}
-.job-warrior {
-  background-color: #fff8e5; /* 연한 노란색 */
-}
-
-/* 위/아래/수정 버튼 디자인 개선 */
-.move-btn, .edit-btn {
-  background-color: #f0d1de;
-  border: none;
-  padding: 4px 8px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-  color: #4b2c3f;
-}
-.move-btn:hover, .edit-btn:hover {
-  background-color: #e4b9ca;
-}
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Noto Sans KR', sans-serif;
-      margin: 0;
-      background-color: #fdf8f9;
-      color: #212529;
-    }
-
-    /* 히어로 영역 */
-    .hero {
-      background: linear-gradient(to bottom, rgba(31, 45, 61, 0.8), rgba(255,255,255,0.1)),
-        url('https://images.unsplash.com/photo-1618005198919-e1d225f1f0b9?auto=format&fit=crop&w=1400&q=80') no-repeat center/cover;
-      color: white;
-      text-align: center;
-      padding: 100px 20px 60px;
-    }
-    .hero h1 {
-      font-size: 48px;
-      margin: 0;
-      font-weight: 700;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    }
-
-    /* 상단 메뉴 */
-    nav {
-      background-color: #fff0f5;
-      padding: 16px;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      display: flex;
-      gap: 20px;
-      justify-content: center;
-      border-bottom: 1px solid #f3d5e2;
-    }
-    nav a {
-      color: #c45a84;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 16px;
-      transition: color 0.3s;
-    }
-    nav a:hover {
-      color: #8a3d61;
-    }
-
-    /* 공통 섹션 */
-    section {
-      padding: 80px 20px;
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-    section h1 {
-      font-size: 28px;
-      text-align: center;
-      margin-bottom: 40px;
-      color: #c45a84;
-    }
-
-    /* 체크리스트 header 스타일 */
-    .checklist-header {
-      background-color: #fce9f1;
-      padding: 20px;
-      color: #c45a84;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-radius: 10px;
-      margin-bottom: 30px;
-    }
-    .checklist-header h1 {
-      font-size: 22px;
-      margin: 0;
-      font-weight: 700;
-    }
-    .reset-btn {
-      padding: 8px 16px;
-      background-color: #e3cbdc;
-      color: #4b2c3f;
-      border: none;
-      border-radius: 6px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-    .reset-btn:hover {
-      background-color: #d3b4c8;
-    }
-
-    .container {
-      padding: 0 20px;
-    }
-    .group-section {
-      background-color: #ffffff;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-      border-radius: 12px;
-      padding: 30px;
-      margin-bottom: 40px;
-    }
-    .group-section h2 {
-      text-align: center;
-      font-size: 22px;
-      margin-bottom: 30px;
-      color: #a84e6d;
-    }
-    .controls {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 30px;
-    }
-    .controls input {
-      padding: 10px;
-      width: 200px;
-      border: 1px solid #e6cfe1;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-    .controls button {
-      padding: 10px 20px;
-      background-color: #d86a9d;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-    .controls button:hover {
-      background-color: #b84c82;
-    }
-
-    .raid-row {
+  h1 {
+    font-size: 28px;
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 700;
+  }
+  h2 {
+    font-size: 20px;
+    margin-bottom: 16px;
+    text-align: center;
+    font-weight: 600;
+  }
+  .section {
+    max-width: 800px;
+    margin: 30px auto;
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+  }
+  .player-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    align-items: center;
+  }
+  .player-row input {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    flex: 1;
+  }
+  .player-row button {
+    padding: 10px 14px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: none;
+    background-color: #4a90e2;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .player-row button:hover {
+    background-color: #357ab8;
+  }
+.player-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin: 6px 0;
+  background: #fff;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: nowrap; /* ✅ wrap 막기 */
-  gap: 20px;
-}
-  .raid-board {
-  background-color: #fdf5f8;
-  border-radius: 10px;
-  padding: 20px;
-  width: 48%; /* ✅ 가로폭 고정 */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-}
-    .raid-board h3 {
-      font-size: 17px;
-      margin-bottom: 15px;
-      color: #343a40;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .raid-board h3 .dot {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      display: inline-block;
-    }
-    .dot.purple { background-color: purple; }
-    .dot.yellow { background-color: gold; }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
-      font-size: 13px;
-      background-color: white;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    th, td {
-      padding: 8px 6px;
-      border: 1px solid #e9ecef;
-      white-space: nowrap;
-      vertical-align: middle;
-      text-align: center;
-    }
-    td:first-child,
-    td:nth-child(2) {
-      text-align: left;
-    }
-    td.clickable {
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-    .easy.checked {
-  background-color: #a9dfbf !important;
-  color: #1e4620;
-  font-weight: bold;
-  position: relative;
-}
-.easy.checked::after {
-  content: '✓';
-  position: absolute;
-  right: 6px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 16px;
-  font-weight: bold;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-.normal.checked {
-  background-color: #ffe066 !important;
-  color: #5c4400;
-  font-weight: bold;
-  position: relative;
-}
-.normal.checked::after {
-  content: '✓';
-  position: absolute;
-  right: 6px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 16px;
-  font-weight: bold;
+.player-card:hover {
+  background-color: #f3f7ff;
 }
 
-.hard.checked {
-  background-color: #f5b7b1 !important;
-  color: #7a2b2b;
-  font-weight: bold;
-  position: relative;
+.player-card.selected {
+  background-color: #dceeff;
+  transform: scale(1.01);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
-.hard.checked::after {
-  content: '✓';
-  position: absolute;
-  right: 6px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 16px;
-  font-weight: bold;
+.player-info {
+  font-size: 15px;
+  font-weight: 500;
 }
-    input[type="checkbox"] { display: none; }
-    input[type="text"] {
+
+.player-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.player-actions button,
+.edit-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.edit-input {
+  font-size: 14px;
   border: none;
+  border-bottom: 2px solid #ccc;
   background: transparent;
   outline: none;
+  padding: 6px 0;
+  transition: border-color 0.2s;
+  width: 100px;
 }
-    .delete-btn {
-      background-color: #dc3545;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      color: #fff;
-      font-size: 13px;
-    }
-    .delete-btn:hover { background-color: #c82333; }
-  </style>
+
+.edit-input[type="number"] {
+  width: 60px;
+}
+
+.edit-input:focus {
+  border-color: #4a90e2;
+}
+
+.btn-save {
+  padding: 6px 12px;
+  font-size: 13px;
+  border: none;
+  border-radius: 20px;
+  background-color: #4a90e2;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-save:hover {
+  background-color: #357ab8;
+}
+
+  .player-row button:active,
+.player-actions button:active {
+  transform: scale(0.96);
+}
+.player-actions button {
+  padding: 6px 12px;
+  font-size: 13px;
+  border: none;
+  border-radius: 20px;
+  background-color: #e0e0e0;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.player-actions button:hover {
+  background-color: #ccc;
+}
+.btn-primary {
+  display: block;
+  margin: 20px auto;
+  padding: 12px 24px;
+  font-size: 16px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s ease;
+}
+.btn-primary:hover {
+  background-color: #357ab8;
+}
+.btn-primary:active {
+  transform: scale(0.96);
+}
+  #selectedCount {
+    text-align: center;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+  .team-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    gap: 20px;
+  }
+  .team {
+    flex: 1;
+    border-radius: 12px;
+    padding: 20px;
+    background-color: white;
+    color: #333;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    transition: box-shadow 0.3s ease;
+  }
+  .team.attack {
+    border-top: 5px solid #b44646;
+  }
+  .team.defense {
+    border-top: 5px solid #358a89;
+  }
+  .team h2 {
+    margin-top: 0;
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+  .map-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  .map-list label {
+    background: #f0f0f0;
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  .map-list label:hover {
+    background-color: #e0e0e0;
+  }
+  .map-item {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  user-select: none;
+}
+
+.map-item:hover {
+  background-color: #e0e0e0;
+}
+
+.map-item.excluded {
+  text-decoration: line-through;
+  color: #b00020;
+  background-color: #ffeaea;
+}
+  #mapResult, #excludedMaps {
+    text-align: center;
+    font-size: 16px;
+    margin-top: 20px;
+    font-weight: 500;
+  }
+</style>
 </head>
 <body>
+  <h1>발로란트 내전 도우미</h1>
 
-  <!-- 표지 -->
-  <div class="hero">
-    <h1>화양연화</h1>
+  <div class="section">
+    <h2>1. 인원 목록</h2>
+    <div class="player-row">
+      <input type="text" id="newName" placeholder="이름">
+      <input type="number" id="newScore" placeholder="실력 (1~30)" min="1" max="30">
+      <button onclick="addPlayer()">추가</button>
+      <button onclick="toggleShowScores()">실력표기</button>
+    </div>
+    <div id="playerList"></div>
+    <div id="selectedCount">현재 선택 인원: 0명 / 10명</div>
   </div>
 
-  <!-- 메뉴 -->
-  <nav>
-    <a href="#notice-board">공지사항</a>
-    <a href="#members">길드원 리스트</a>
-    <a href="#checklist">레이드 체크리스트</a>
-    <a href="#cost">레이드 모금</a>
-  </nav>
-<section id="notice-board">
-
-  <!-- 길드 공지사항 섹션 -->
-<section id="notice-board" style="padding: 40px; max-width: 800px; margin: 0 auto; font-family: 'Noto Sans KR', sans-serif;">
-  <h2 style="font-size: 28px; font-weight: bold; margin-bottom: 20px; text-align: center;">📢 길드 공지사항</h2>
-
-  <button id="addNoticeBtn" style="display: block; margin: 0 auto 20px auto; padding: 10px 20px; font-size: 14px; border: none; border-radius: 5px; background-color: #f48fb1; color: white; cursor: pointer;">+ 새 공지 작성</button>
-
-  <div id="noticeFormContainer" style="display: none; margin-bottom: 30px;">
-    <input id="noticeTitle" type="text" placeholder="제목" style="width: 100%; padding: 10px; margin-bottom: 10px; font-size: 14px;">
-    <textarea id="noticeContent" placeholder="내용" style="width: 100%; height: 120px; padding: 10px; font-size: 14px;"></textarea>
-    <button id="saveNoticeBtn" style="margin-top: 10px; padding: 10px 15px; background-color: #ce93d8; border: none; color: white; cursor: pointer; border-radius: 5px;">저장</button>
-    <button id="cancelEditBtn" style="margin-left: 10px; padding: 10px 15px; background-color: #b0bec5; border: none; color: white; cursor: pointer; border-radius: 5px;">취소</button>
-  </div>
-
-  <div id="noticeList"></div>
-</section>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-  const firebaseConfig = {
-     apiKey: "AIzaSyAUtDDoKC00AS0RhyeXaWCX71z8x4XmrA8",
-    authDomain: "hwayangyeonhwa-4b7c5.firebaseapp.com",
-    projectId: "hwayangyeonhwa-4b7c5",
-    storageBucket: "hwayangyeonhwa-4b7c5.appspot.com",
-    messagingSenderId: "186081597939",
-    appId: "1:186081597939:web:8af4cbb8c23ae9dbfcda86",
-    measurementId: "G-GK4Y4EW7KC"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const noticeRef = collection(db, "notices");
-
-  const noticeList = document.getElementById("noticeList");
-  const addNoticeBtn = document.getElementById("addNoticeBtn");
-  const noticeFormContainer = document.getElementById("noticeFormContainer");
-  const saveNoticeBtn = document.getElementById("saveNoticeBtn");
-  const cancelEditBtn = document.getElementById("cancelEditBtn");
-  const noticeTitle = document.getElementById("noticeTitle");
-  const noticeContent = document.getElementById("noticeContent");
-
-  let editingId = null;
-
-  function renderNotice(docData, id) {
-    const wrapper = document.createElement("div");
-    wrapper.style.border = "1px solid #ddd";
-    wrapper.style.borderRadius = "10px";
-    wrapper.style.padding = "15px";
-    wrapper.style.marginBottom = "15px";
-    wrapper.style.backgroundColor = "#fce4ec";
-
-    const title = document.createElement("h3");
-    title.textContent = docData.title;
-    title.style.marginBottom = "10px";
-
-    const content = document.createElement("p");
-    content.textContent = docData.content;
-    content.style.whiteSpace = "pre-wrap";
-
-    const btnWrapper = document.createElement("div");
-    btnWrapper.style.marginTop = "10px";
-
-    const editBtn = document.createElement("button");
-    editBtn.textContent = "수정";
-    editBtn.style.marginRight = "10px";
-    editBtn.style.backgroundColor = "#ce93d8";
-    editBtn.style.border = "none";
-    editBtn.style.color = "white";
-    editBtn.style.padding = "5px 10px";
-    editBtn.style.cursor = "pointer";
-    editBtn.style.borderRadius = "5px";
-    editBtn.onclick = () => {
-      noticeTitle.value = docData.title;
-      noticeContent.value = docData.content;
-      noticeFormContainer.style.display = "block";
-      editingId = id;
-    };
-
-    const deleteBtn = document.createElement("button");
-    deleteBtn.textContent = "삭제";
-    deleteBtn.style.backgroundColor = "#ef9a9a";
-    deleteBtn.style.border = "none";
-    deleteBtn.style.color = "white";
-    deleteBtn.style.padding = "5px 10px";
-    deleteBtn.style.cursor = "pointer";
-    deleteBtn.style.borderRadius = "5px";
-    deleteBtn.onclick = async () => {
-      await deleteDoc(doc(db, "notices", id));
-    };
-
-    btnWrapper.appendChild(editBtn);
-    btnWrapper.appendChild(deleteBtn);
-
-    wrapper.appendChild(title);
-    wrapper.appendChild(content);
-    wrapper.appendChild(btnWrapper);
-
-    noticeList.appendChild(wrapper);
-  }
-
-  addNoticeBtn.onclick = () => {
-    noticeFormContainer.style.display = "block";
-    noticeTitle.value = "";
-    noticeContent.value = "";
-    editingId = null;
-  };
-
-  cancelEditBtn.onclick = () => {
-    noticeFormContainer.style.display = "none";
-    noticeTitle.value = "";
-    noticeContent.value = "";
-    editingId = null;
-  };
-
-  saveNoticeBtn.onclick = async () => {
-    const title = noticeTitle.value.trim();
-    const content = noticeContent.value.trim();
-    if (!title || !content) return;
-
-    if (editingId) {
-      await updateDoc(doc(db, "notices", editingId), { title, content });
-    } else {
-      await addDoc(noticeRef, { title, content });
-    }
-
-    noticeFormContainer.style.display = "none";
-    noticeTitle.value = "";
-    noticeContent.value = "";
-    editingId = null;
-  };
-
-  onSnapshot(query(noticeRef, orderBy("title", "desc")), (snapshot) => {
-    noticeList.innerHTML = "";
-    snapshot.forEach((doc) => {
-      renderNotice(doc.data(), doc.id);
-    });
-  });
-</script>
-
-<section id="members">
-  <h1>길드원 리스트</h1>
-  <div style="display: flex; gap: 40px; flex-wrap: nowrap; justify-content: center; align-items: flex-start;">
-
-    <!-- 1군 -->
-    <div style="flex: 1; min-width: 300px;">
-      <h2 style="color:#c45a84; text-align:center;">1군</h2>
-      <table id="memberTable1" style="width:100%; border-collapse: collapse; background-color: white; font-size: 14px;">
-        <thead>
-          <tr>
-            <th>이름</th>
-            <th>마크 닉네임</th>
-            <th>직업</th>
-            <th>↑↓</th>
-            <th>수정</th>
-            <th>삭제</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- JS로 행 추가 -->
-        </tbody>
-      </table>
-      <div style="text-align:center; margin-top: 10px;">
-        <button onclick="addMemberRow('1')" style="padding:6px 12px; background:#e3cbdc; border:none; border-radius:6px; color:#4b2c3f; cursor:pointer;">행 추가</button>
+  <div class="section">
+    <h2>2. 팀 자동 배정</h2>
+    <button class="btn-primary" onclick="makeTeams()">선택된 10명으로 팀 배정</button>
+    <div class="team-container">
+      <div class="team attack">
+        <h2>공격팀</h2>
+        <div id="teamA"></div>
       </div>
-    </div>
-
-    <!-- 2군 -->
-    <div style="flex: 1; min-width: 300px;">
-      <h2 style="color:#c45a84; text-align:center;">2군</h2>
-      <table id="memberTable2" style="width:100%; border-collapse: collapse; background-color: white; font-size: 14px;">
-        <thead>
-          <tr>
-            <th>이름</th>
-            <th>마크 닉네임</th>
-            <th>직업</th>
-            <th>↑↓</th>
-            <th>수정</th>
-            <th>삭제</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- JS로 행 추가 -->
-        </tbody>
-      </table>
-      <div style="text-align:center; margin-top: 10px;">
-        <button onclick="addMemberRow('2')" style="padding:6px 12px; background:#e3cbdc; border:none; border-radius:6px; color:#4b2c3f; cursor:pointer;">행 추가</button>
-      </div>
-    </div>
-
-  </div>
-</section>
-  <!-- 체크리스트 -->
-  <section id="checklist">
-    <div class="checklist-header">
-      <h1>레이드 체크리스트</h1>
-      <button class="reset-btn" onclick="resetClearStates()">클리어 상태 초기화</button>
-    </div>
-    <div class="container">
-      <div class="group-section">
-        <h2>1군</h2>
-        <div class="controls">
-          <input type="text" id="playerName1" placeholder="이름 입력" />
-          <input type="text" id="playerNick1" placeholder="마크 닉네임 입력" />
-          <button onclick="addPlayer('1')">추가</button>
-        </div>
-        <div class="raid-row">
-          <div class="raid-board">
-            <h3><span class="dot purple"></span> 테라곤</h3>
-            <table><thead><tr><th>이름</th><th>마크 닉네임</th><th>이지</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
-            <tbody id="teragonTable1"></tbody></table>
-          </div>
-          <div class="raid-board">
-            <h3><span class="dot yellow"></span> 엑소니아</h3>
-            <table><thead><tr><th>이름</th><th>마크 닉네임</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
-            <tbody id="exoniaTable1"></tbody></table>
-          </div>
-        </div>
-      </div>
-      <div class="group-section">
-        <h2>2군</h2>
-        <div class="controls">
-          <input type="text" id="playerName2" placeholder="이름 입력" />
-          <input type="text" id="playerNick2" placeholder="마크 닉네임 입력" />
-          <button onclick="addPlayer('2')">추가</button>
-        </div>
-        <div class="raid-row">
-          <div class="raid-board">
-            <h3><span class="dot purple"></span> 테라곤</h3>
-            <table><thead><tr><th>이름</th><th>마크 닉네임</th><th>이지</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
-            <tbody id="teragonTable2"></tbody></table>
-          </div>
-          <div class="raid-board">
-            <h3><span class="dot yellow"></span> 엑소니아</h3>
-            <table><thead><tr><th>이름</th><th>마크 닉네임</th><th>노말</th><th>하드</th><th>삭제</th></tr></thead>
-            <tbody id="exoniaTable2"></tbody></table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 모금비용 -->
-  <section id="cost">
-  <h1>레이드 모금</h1>
-
-  <div style="display: flex; gap: 40px; flex-wrap: nowrap; justify-content: center; align-items: flex-start;">
-
-    <!-- 레이드 모금 테이블 (왼쪽) -->
-    <div style="flex: 1; min-width: 300px;">
-      <h2 style="color:#c45a84; text-align: center;">레이드 모금</h2>
-      <table id="fundTable" style="width:100%; border-collapse: collapse; background-color: white; font-size: 14px;">
-        <thead>
-  <tr>
-    <th>닉네임</th>
-    <th>금액</th>
-    <th>표시</th> <!-- ✅ 추가 -->
-    <th>삭제</th>
-  </tr>
-</thead>
-        <tbody id="fundBody">
-          <!-- 행 자동 추가 -->
-        </tbody>
-        <tfoot>
-  <tr>
-    <td colspan="2" style="text-align: right; font-weight: bold;">총합</td>
-    <td colspan="2" id="totalAmount" style="font-weight: bold;">₩0</td>
-  </tr>
-</tfoot>
-      </table>
-      <div style="text-align:center; margin-top: 10px;">
-        <button onclick="addFundRow()" style="padding: 6px 12px; background-color: #e3cbdc; border: none; border-radius: 6px; color: #4b2c3f; cursor: pointer;">행 추가</button>
-      </div>
-    </div>
-
-    <!-- 빌린 무기 테이블 (오른쪽) -->
-    <div style="flex: 1; min-width: 300px;">
-      <h2 style="color:#c45a84; text-align: center;">빌린 무기</h2>
-      <table id="weaponTable" style="width:100%; border-collapse: collapse; background-color: white; font-size: 14px;">
-        <thead style="background-color: #ffe4ec; color: #a84e6d;">
-          <tr>
-            <th style="padding: 10px; border: 1px solid #f3d5e2;">무기 (주인)</th>
-            <th style="padding: 10px; border: 1px solid #f3d5e2;">빌린 사람</th>
-            <th style="padding: 10px; border: 1px solid #f3d5e2;">삭제</th>
-          </tr>
-        </thead>
-        <tbody id="weaponBody">
-          <!-- 행 자동 추가 -->
-        </tbody>
-      </table>
-      <div style="text-align:center; margin-top: 10px;">
-        <button onclick="addWeaponRow()" style="padding: 6px 12px; background-color: #e3cbdc; border: none; border-radius: 6px; color: #4b2c3f; cursor: pointer;">행 추가</button>
+      <div class="team defense">
+        <h2>수비팀</h2>
+        <div id="teamB"></div>
       </div>
     </div>
   </div>
-</section>
 
-<script>
-let isUpdatingFromFirestore = false;  // Firestore에서 불러오는 중인지 확인
+  <div class="section">
+    <h2>3. 맵 랜덤 선택</h2>
+    <div class="map-list" id="mapOptions"></div>
+    <button class="btn-primary" onclick="selectRandomMap()">맵 랜덤 선택</button>
+    <div id="mapResult">맵: (선택되지 않음)</div>
+    <div id="excludedMaps">제외된 맵: 없음</div>
+  </div>
 
-  function addFundRow() {
-  const tbody = document.getElementById('fundBody');
-  const row = document.createElement('tr');
-  row.innerHTML = `
-    <td><input type="text" placeholder="닉네임" style="width: 100%; border: none; background: transparent;" /></td>
-    <td><input type="text" class="money" placeholder="금액" style="width: 100%; border: none; background: transparent;" oninput="updateTotal()" /></td>
-    <td class="money-display"></td>
-    <td><button onclick="deleteRow(this)" style="background-color:#dc3545; color:white; border:none; border-radius:4px; padding:4px 8px;">삭제</button></td>
-  `;
-  tbody.appendChild(row);
-}
-
-
-  function addWeaponRow() {
-    const tbody = document.getElementById('weaponBody');
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td style="padding:8px; border: 1px solid #f3d5e2;"><input type="text" placeholder="무기 이름 (주인)" style="width: 100%; border: none; background: transparent;" /></td>
-      <td style="padding:8px; border: 1px solid #f3d5e2;"><input type="text" placeholder="빌린 사람" style="width: 100%; border: none; background: transparent;" /></td>
-      <td style="padding:8px; border: 1px solid #f3d5e2; text-align: center;"><button onclick="deleteRow(this)" style="background-color:#dc3545; color:white; border:none; border-radius:4px; padding:4px 8px;">삭제</button></td>
-    `;
-    tbody.appendChild(row);
-  }
-
- 
- const 한글단위 = {
-  '억': 100000000,
-  '천만': 10000000,
-  '백만': 1000000,
-  '십만': 100000,
-  '만': 10000,
-  '천': 1000
-};
-
-function parseKoreanMoney(input) {
-  let str = input.replace(/,/g, '').trim();
-  if (!str) return 0;
-  let total = 0;
-  let matched = false;
-  for (let unit in 한글단위) {
-    if (str.includes(unit)) {
-      const num = parseFloat(str.split(unit)[0]) || 1;
-      total += num * 한글단위[unit];
-      matched = true;
-      str = str.replace(num + unit, '');
-    }
-  }
-  if (!matched && /^[0-9]+$/.test(str)) {
-    return parseInt(str, 10);
-  }
-  return total;
-}
-
-function formatMoneyDisplay(amount) {
-  let display = '₩' + amount.toLocaleString();
-  if (amount >= 100000000) {
-    display += ' (' + (amount / 100000000) + '억)';
-  } else if (amount >= 10000) {
-    display += ' (' + (amount / 10000) + '만)';
-  }
-  return display;
-}
-
-function updateTotal() {
-  let total = 0;
-  document.querySelectorAll('#fundBody tr').forEach(row => {
-    const input = row.querySelector('.money');
-    const display = row.querySelector('.money-display');
-    const raw = input?.value || '';
-    const amount = parseKoreanMoney(raw);
-    total += amount;
-    if (display) {
-      display.textContent = raw ? formatMoneyDisplay(amount) : '';
-    }
-  });
-  document.getElementById('totalAmount').innerText = formatMoneyDisplay(total);
-}
-
-</script>
-
-
-  <!-- 기능 스크립트 -->
   <script>
-    function addPlayer(side) {
-      const name = document.getElementById(`playerName${side}`).value.trim();
-      const nick = document.getElementById(`playerNick${side}`).value.trim();
-      if (!name || !nick) {
-        alert("이름과 마크 닉네임을 입력해주세요!");
+    const allMaps = ["Bind", "Haven", "Split", "Ascent", "Icebox", "Breeze", "Fracture", "Pearl", "Lotus", "Sunset", "Abyss"];
+    let selectedIndices = new Set();
+    let editingIndex = null;
+    let showScores = false;
+
+    function toggleShowScores() {
+      showScores = !showScores;
+      renderPlayerList();
+    }
+
+    function addPlayer() {
+      const name = document.getElementById("newName").value.trim();
+      const score = parseInt(document.getElementById("newScore").value);
+      if (!name || isNaN(score) || score < 1 || score > 30) {
+        alert("이름과 실력을 올바르게 입력하세요 (1~30)");
         return;
       }
-      addRow(`teragonTable${side}`, name, nick, true);
-      addRow(`exoniaTable${side}`, name, nick, false);
-      saveData();
-      document.getElementById(`playerName${side}`).value = "";
-      document.getElementById(`playerNick${side}`).value = "";
+      const players = JSON.parse(localStorage.getItem("valorant_players") || "[]");
+      players.push({ name, score });
+      localStorage.setItem("valorant_players", JSON.stringify(players));
+      document.getElementById("newName").value = "";
+      document.getElementById("newScore").value = "";
+      renderPlayerList();
     }
-    function addRow(tableId, name, nick, includeEasy, easy = false, normal = false, hard = false) {
-      const table = document.getElementById(tableId);
-      const newRow = document.createElement("tr");
-      const easyCell = includeEasy ? `
-        <td class="clickable easy${easy ? ' checked' : ''}" onclick="toggleCheckbox(this)">
-          <input type="checkbox" ${easy ? 'checked' : ''}>
-        </td>` : '';
-      newRow.innerHTML = `
-        <td>${name}</td>
-        <td>${nick}</td>
-        ${easyCell}
-        <td class="clickable normal${normal ? ' checked' : ''}" onclick="toggleCheckbox(this)">
-          <input type="checkbox" ${normal ? 'checked' : ''}>
-        </td>
-        <td class="clickable hard${hard ? ' checked' : ''}" onclick="toggleCheckbox(this)">
-          <input type="checkbox" ${hard ? 'checked' : ''}>
-        </td>
-        <td><button class="delete-btn" onclick="deleteRow(this)">삭제</button></td>
-      `;
-      table.appendChild(newRow);
-    }
-    function toggleCheckbox(cell) {
-      const checkbox = cell.querySelector('input[type="checkbox"]');
-      checkbox.checked = !checkbox.checked;
-      cell.classList.toggle('checked', checkbox.checked);
-      saveData();
-    }
-  function deleteRow(button) {
-  const row = button.closest("tr");
-  row.remove();
 
-  // 모금 테이블이면 총합 갱신
-  if (document.getElementById('fundTable').contains(row)) {
-    updateTotal();
-  }
-
-  // 삭제 후 무조건 저장
-  saveData();
-}
-    function resetClearStates() {
-      document.querySelectorAll("input[type='checkbox']").forEach(cb => cb.checked = false);
-      document.querySelectorAll("td.clickable").forEach(cell => cell.classList.remove("checked"));
-      saveData();
-    }
-    
-function clearExistingRows() {
-  ['teragonTable1', 'exoniaTable1', 'teragonTable2', 'exoniaTable2'].forEach(id => {
-    const tbody = document.getElementById(id);
-    if (tbody) tbody.innerHTML = "";
-  });
-
-  const fundBody = document.getElementById('fundBody');
-  if (fundBody) fundBody.innerHTML = "";
-
-  const weaponBody = document.getElementById('weaponBody');
-  if (weaponBody) weaponBody.innerHTML = "";
-
-  ['memberTable1', 'memberTable2'].forEach(id => {
-    const tbody = document.querySelector(`#${id} tbody`);
-    if (tbody) tbody.innerHTML = "";
-  });
-}
-    
-function loadData() {
-  const data = JSON.parse(localStorage.getItem("guildData") || '{}');
-
-  // ✅ 체크리스트 복원
-  ['teragonTable1', 'exoniaTable1', 'teragonTable2', 'exoniaTable2'].forEach(id => {
-    data[id]?.forEach(entry => {
-      addRow(id, entry.name, entry.nick, entry.easy !== null, entry.easy, entry.normal, entry.hard);
-    });
-  });
-
- // ✅ 모금 복원
-const fundBody = document.getElementById('fundBody');
-if (data.fund?.length) {
-  data.fund.forEach(entry => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td><input type="text" value="${entry.name}" placeholder="닉네임" /></td>
-      <td><input type="text" value="${entry.amount}" class="money" placeholder="금액" oninput="updateTotal()" /></td>
-      <td class="money-display"></td>
-      <td><button onclick="deleteRow(this)" class="delete-btn">삭제</button></td>
-    `;
-    fundBody.appendChild(row);
-  });
-
-  updateTotal(); // ✅ 총합 계산 다시!
-} else {
-  addFundRow(); // ✅ 데이터 없을 때만 기본 행 1개 추가
-}
-  // ✅ 무기 복원
-  const weaponBody = document.getElementById('weaponBody');
-  if (data.weapon?.length) {
-    data.weapon.forEach(entry => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td><input type="text" value="${entry.weapon}" placeholder="무기 이름 (주인)" /></td>
-        <td><input type="text" value="${entry.borrower}" placeholder="빌린 사람" /></td>
-        <td><button onclick="deleteRow(this)" class="delete-btn">삭제</button></td>
-      `;
-      weaponBody.appendChild(row);
-    });
-  } else {
-    addWeaponRow(); // 없으면 기본 행 추가
-  }
-
-  // ✅ 길드원 리스트 복원
-  ['1', '2'].forEach(group => {
-    const tbody = document.querySelector(`#memberTable${group} tbody`);
-    data[`members${group}`]?.forEach(member => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td><input type="text" value="${member.name}" oninput="updateJobColor(this)" /></td>
-        <td><input type="text" value="${member.nick}" /></td>
-        <td><input type="text" value="${member.job}" oninput="updateJobColor(this)" /></td>
-        <td>
-          <button class="move-btn" onclick="moveRow(this, -1)">↑</button>
-          <button class="move-btn" onclick="moveRow(this, 1)">↓</button>
-        </td>
-        <td><button class="edit-btn" onclick="toggleEdit(this)">수정</button></td>
-        <td><button class="delete-btn" onclick="deleteRow(this)">삭제</button></td>
-      `;
-      tbody.appendChild(row);
-      updateJobColor(row.querySelectorAll('input')[2]);
-    });
-  });
-
-  updateTotal(); // 총합도 갱신
-}
-function updateJobColor(input) {
-  const value = input.value.trim();
-  const row = input.closest('tr');
-
-  row.classList.remove('job-frost', 'job-blade', 'job-warrior', 'job-mage');
-
-  switch (value) {
-    case '프로스트':
-      row.classList.add('job-frost');
-      break;
-    case '블레이드':
-      row.classList.add('job-blade');
-      break;
-    case '워리어':
-      row.classList.add('job-warrior');
-      break;
-    case '메이지':
-      row.classList.add('job-mage');
-      break;
-  }
-
-  // 저장은 타이핑이 끝났을 때 하게 만들기 → debounce
-  debounceSaveData();
-}
-
-
-// ✅ 이벤트 등록 (맨 아래에 유지)
-window.addEventListener("load", loadData);
-
-  </script>
-
-<script>
-
-  let saveTimeout;
-function debounceSaveData(delay = 1000) {
-  clearTimeout(saveTimeout);
-  saveTimeout = setTimeout(() => {
-    saveData();
-  }, delay);
-}
-
-  // 길드원 리스트 행 추가
-  function addMemberRow(group) {
-    const tbody = document.querySelector(`#memberTable${group} tbody`);
-    const row = document.createElement('tr');
-
-    row.innerHTML = `
-      <td><input type="text" placeholder="이름" oninput="updateJobColor(this)" /></td>
-      <td><input type="text" placeholder="마크 닉네임" /></td>
-      <td><input type="text" placeholder="직업" oninput="updateJobColor(this)" /></td>
-      <td>
-        <button class="move-btn" onclick="moveRow(this, -1)">↑</button>
-        <button class="move-btn" onclick="moveRow(this, 1)">↓</button>
-      </td>
-      <td><button class="edit-btn" onclick="toggleEdit(this)">수정</button></td>
-      <td><button class="delete-btn" onclick="deleteRow(this)">삭제</button></td>
-    `;
-    tbody.appendChild(row);
-    saveData(); // 행이 추가되면 자동으로 데이터 저장
-  }
-
-  // 위/아래 이동
-  function moveRow(btn, direction) {
-    const row = btn.closest('tr');
-    const tbody = row.parentNode;
-    const index = Array.from(tbody.children).indexOf(row);
-    const targetIndex = index + direction;
-
-    if (targetIndex < 0 || targetIndex >= tbody.children.length) return;
-    const targetRow = tbody.children[targetIndex];
-
-    if (direction === -1) {
-      tbody.insertBefore(row, targetRow);
-    } else {
-      tbody.insertBefore(targetRow, row);
-    }
-    saveData(); // 이동 후 데이터 저장
-  }
-
-  // 수정/저장 toggle
-function toggleEdit(btn) {
-  const row = btn.closest('tr');
-  const inputs = row.querySelectorAll('input');
-  const isEditing = btn.textContent === '수정';
-
-  inputs.forEach(input => input.readOnly = !isEditing);
-  btn.textContent = isEditing ? '저장' : '수정';
-
-  if (!isEditing) {
-    updateJobColor(inputs[2]); // 👉 저장할 때 색상 갱신
-    saveData(); // 수정 완료 후 저장
-  }
-}
-
-
-</script>
-   <script>
-    // 기존 saveData 함수 이름만 바꾸기
-    function saveData() {
-      if (isUpdatingFromFirestore) return;
-      const data = {};
-      ['teragonTable1', 'exoniaTable1', 'teragonTable2', 'exoniaTable2'].forEach(id => {
-        const rows = document.getElementById(id)?.querySelectorAll("tr") || [];
-        data[id] = Array.from(rows).map(row => {
-          const cells = row.querySelectorAll("td");
-          return {
-            name: cells[0]?.textContent.trim(),
-            nick: cells[1]?.textContent.trim(),
-            easy: cells.length === 6 ? cells[2].classList.contains("checked") : null,
-            normal: cells.length === 6 ? cells[3].classList.contains("checked") : cells[2].classList.contains("checked"),
-            hard: cells.length === 6 ? cells[4].classList.contains("checked") : cells[3].classList.contains("checked")
-          };
-        });
+    function renderPlayerList() {
+      const list = document.getElementById("playerList");
+      list.innerHTML = "";
+      const players = JSON.parse(localStorage.getItem("valorant_players") || "[]");
+      players.forEach((p, i) => {
+        const isEditing = (editingIndex === i);
+        const div = document.createElement("div");
+        div.className = "player-card" + (selectedIndices.has(i) ? " selected" : "");
+        div.onclick = () => { if (!isEditing) toggleSelect(i); };
+        div.innerHTML = `
+          <div class="player-info">
+            <span id="view-${i}" style="display:${isEditing ? 'none' : 'inline'}">
+              ${p.name}${showScores ? ` (실력: ${p.score})` : ''}
+            </span>
+           <div id="edit-${i}" class="edit-section" style="display:${isEditing ? 'flex' : 'none'}">
+  <input class="edit-input" type='text' id='editName${i}' value='${p.name}' onclick='event.stopPropagation();'>
+  <input class="edit-input" type='number' id='editScore${i}' value='${p.score}' onclick='event.stopPropagation();'>
+  <button class="btn-save" onclick='saveEdit(${i}); event.stopPropagation();'>저장</button>
+</div>
+          </div>
+          <div class="player-actions">
+            <button class="btn-edit" onclick="toggleEdit(${i}); event.stopPropagation();">수정</button>
+            <button class="btn-delete" onclick="deletePlayer(${i}); event.stopPropagation();">삭제</button>
+          </div>
+        `;
+        list.appendChild(div);
       });
-
-      const fundRows = document.querySelectorAll('#fundBody tr');
-      data.fund = Array.from(fundRows).map(row => {
-        const inputs = row.querySelectorAll('input');
-        return {
-          name: inputs[0]?.value || '',
-          amount: inputs[1]?.value || ''
-        };
-      });
-
-      const weaponRows = document.querySelectorAll('#weaponBody tr');
-      data.weapon = Array.from(weaponRows).map(row => {
-        const inputs = row.querySelectorAll('input');
-        return {
-          weapon: inputs[0]?.value || '',
-          borrower: inputs[1]?.value || ''
-        };
-      });
-
-      ['1', '2'].forEach(group => {
-        const rows = document.querySelectorAll(`#memberTable${group} tbody tr`);
-        data[`members${group}`] = Array.from(rows).map(row => {
-          const inputs = row.querySelectorAll('input');
-          return {
-            name: inputs[0]?.value || '',
-            nick: inputs[1]?.value || '',
-            job: inputs[2]?.value || ''
-          };
-        });
-      });
-
-      localStorage.setItem("guildData", JSON.stringify(data));
-      saveDataToFirestore();
+      updateSelectedCount();
     }
-  </script>
-  <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
-  import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAUtDDoKC00AS0RhyeXaWCX71z8x4XmrA8",
-    authDomain: "hwayangyeonhwa-4b7c5.firebaseapp.com",
-    projectId: "hwayangyeonhwa-4b7c5",
-    storageBucket: "hwayangyeonhwa-4b7c5.appspot.com",
-    messagingSenderId: "186081597939",
-    appId: "1:186081597939:web:8af4cbb8c23ae9dbfcda86",
-    measurementId: "G-GK4Y4EW7KC"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  // 전역에서 사용할 수 있도록 window에 등록
-  window.saveDataToFirestore = async function () {
-    const data = JSON.parse(localStorage.getItem("guildData") || '{}');
-    try {
-      await setDoc(doc(db, "guild", "sharedData"), data);
-      console.log("✅ 저장 완료");
-    } catch (e) {
-      console.error("❌ 저장 실패", e);
+    function toggleSelect(index) {
+      if (selectedIndices.has(index)) selectedIndices.delete(index);
+      else selectedIndices.add(index);
+      renderPlayerList();
     }
-  };
 
-  window.loadDataFromFirestore = function () {
-   onSnapshot(doc(db, "guild", "sharedData"), (docSnap) => {
-  if (docSnap.exists()) {
-    const data = docSnap.data();
+    function toggleEdit(index) {
+      editingIndex = index;
+      renderPlayerList();
+    }
 
-    isUpdatingFromFirestore = true; // 🔒 저장 방지 시작
-    localStorage.setItem("guildData", JSON.stringify(data));
-    clearExistingRows();
-    loadData();
-    isUpdatingFromFirestore = false; // 🔓 저장 가능해짐
-  }
+    function saveEdit(index) {
+      const name = document.getElementById(`editName${index}`).value.trim();
+      const score = parseInt(document.getElementById(`editScore${index}`).value);
+      if (!name || isNaN(score) || score < 1 || score > 30) {
+        alert("수정값을 올바르게 입력하세요.");
+        return;
+      }
+      const players = JSON.parse(localStorage.getItem("valorant_players") || "[]");
+      players[index] = { name, score };
+      localStorage.setItem("valorant_players", JSON.stringify(players));
+      editingIndex = null;
+      renderPlayerList();
+    }
+
+    function deletePlayer(index) {
+      const players = JSON.parse(localStorage.getItem("valorant_players") || "[]");
+      players.splice(index, 1);
+      selectedIndices = new Set(Array.from(selectedIndices).filter(i => i !== index).map(i => i > index ? i - 1 : i));
+      localStorage.setItem("valorant_players", JSON.stringify(players));
+      renderPlayerList();
+    }
+
+    function updateSelectedCount() {
+      document.getElementById("selectedCount").innerText = `현재 선택 인원: ${selectedIndices.size}명 / 10명`;
+    }
+
+    function makeTeams() {
+      if (selectedIndices.size !== 10) {
+        alert("정확히 10명을 선택해야 합니다.");
+        return;
+      }
+      const players = JSON.parse(localStorage.getItem("valorant_players") || "[]");
+      const selected = Array.from(selectedIndices).map(i => players[i]);
+      const combinations = getCombinations(selected, 5);
+      let bestCombos = [], minDiff = Infinity;
+      combinations.forEach(teamA => {
+        const teamB = selected.filter(p => !teamA.includes(p));
+        const sumA = teamA.reduce((a, b) => a + b.score, 0);
+        const sumB = teamB.reduce((a, b) => a + b.score, 0);
+        const diff = Math.abs(sumA - sumB);
+        if (diff < minDiff) {
+          minDiff = diff;
+          bestCombos = [{ teamA, teamB }];
+        } else if (diff === minDiff) {
+          bestCombos.push({ teamA, teamB });
+        }
+      });
+      const selectedCombo = bestCombos[Math.floor(Math.random() * bestCombos.length)];
+      displayTeam("teamA", selectedCombo.teamA);
+      displayTeam("teamB", selectedCombo.teamB);
+    }
+
+    function displayTeam(id, team) {
+      const div = document.getElementById(id);
+      div.innerHTML = "";
+      team.forEach(p => {
+        div.innerHTML += `<div>${p.name}</div>`;
+      });
+    }
+
+    function getCombinations(arr, k) {
+      const results = [];
+      function helper(start, path) {
+        if (path.length === k) {
+          results.push(path);
+          return;
+        }
+        for (let i = start; i < arr.length; i++) {
+          helper(i + 1, path.concat([arr[i]]));
+        }
+      }
+      helper(0, []);
+      return results;
+    }
+
+allMaps.forEach(map => {
+  const div = document.createElement("div");
+  div.className = "map-item";
+  div.innerText = map;
+  div.onclick = () => toggleMapExclusion(div);
+  document.getElementById("mapOptions").appendChild(div);
 });
+    
+function toggleMapExclusion(element) {
+  element.classList.toggle("excluded");
+  updateExcludedMapList();
+}
 
-  };
+function updateExcludedMapList() {
+  const labels = document.querySelectorAll(".map-item");
+  const excluded = Array.from(labels)
+    .filter(label => label.classList.contains("excluded"))
+    .map(label => label.textContent);
+  document.getElementById("excludedMaps").innerText =
+    "제외된 맵: " + (excluded.length ? excluded.join(", ") : "없음");
+}
 
-  // 페이지 로드시 불러오기 실행
-  window.addEventListener("load", loadDataFromFirestore);
-</script>
+function selectRandomMap() {
+  const labels = document.querySelectorAll(".map-item");
+  const excluded = Array.from(labels)
+    .filter(label => label.classList.contains("excluded"))
+    .map(label => label.textContent);
+  const available = allMaps.filter(m => !excluded.includes(m));
+  const resultDiv = document.getElementById("mapResult");
+  if (available.length === 0) {
+    resultDiv.innerText = "맵: 선택 가능한 맵이 없습니다.";
+    return;
+  }
+  const selected = available[Math.floor(Math.random() * available.length)];
+  resultDiv.innerText = `맵: ${selected}`;
+}
+    renderPlayerList();
+  </script>
 </body>
-  </body>
 </html>
