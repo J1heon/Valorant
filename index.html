@@ -277,8 +277,9 @@
     <h2>3. 맵 랜덤 선택</h2>
     <div class="map-list" id="mapOptions"></div>
     <button class="btn-primary" onclick="selectRandomMap()">맵 랜덤 선택</button>
-    <div id="mapResult">맵: (선택되지 않음)</div>
-    <div id="excludedMaps">제외된 맵: 없음</div>
+<div id="mapResult">맵: (선택되지 않음)</div>
+<img id="mapImage" src="" alt="맵 이미지" style="display:none; max-width: 100%; margin-top: 10px; border-radius: 10px;" />
+<div id="excludedMaps">제외된 맵: 없음</div>
   </div>
 
   <script>
@@ -445,6 +446,20 @@ function updateExcludedMapList() {
     "제외된 맵: " + (excluded.length ? excluded.join(", ") : "없음");
 }
 
+const mapImages = {
+  Bind: "https://corsproxy.io/?https://static.wikia.nocookie.net/valorant/images/2/23/Loading_Screen_Bind.png/revision/latest/scale-to-width-down/1000?cb=20200620202316",
+  Haven: "https://corsproxy.io/?https://static.wikia.nocookie.net/valorant/images/7/70/Loading_Screen_Haven.png/revision/latest/scale-to-width-down/1000?cb=20200620202335",
+  Split: "https://corsproxy.io/?https://static.wikia.nocookie.net/valorant/images/d/d6/Loading_Screen_Split.png/revision/latest/scale-to-width-down/1000?cb=20230411161807",
+  Ascent: "https://corsproxy.io/?https://static.wikia.nocookie.net/valorant/images/e/e7/Loading_Screen_Ascent.png/revision/latest/scale-to-width-down/1000?cb=20200607180020",
+  Icebox: "https://corsproxy.io/?https://static.wikia.nocookie.net/valorant/images/1/13/Loading_Screen_Icebox.png/revision/latest/scale-to-width-down/1000?cb=20201015084446",
+  Breeze: "https://corsproxy.io/?https://static.wikia.nocookie.net/valorant/images/1/10/Loading_Screen_Breeze.png/revision/latest/scale-to-width-down/1000?cb=20210427160616",
+  Fracture: "https://corsproxy.io/?https://static.wikia.nocookie.net/valorant/images/f/fc/Loading_Screen_Fracture.png/revision/latest/scale-to-width-down/1000?cb=20210908143656",
+  Pearl: "https://corsproxy.io/?https://static.wikia.nocookie.net/valorant/images/a/af/Loading_Screen_Pearl.png/revision/latest/scale-to-width-down/1000?cb=20220622132842",
+  Lotus: "https://corsproxy.io/?https://static.wikia.nocookie.net/valorant/images/d/d0/Loading_Screen_Lotus.png/revision/latest/scale-to-width-down/1000?cb=20230106163526",
+  Sunset: "https://corsproxy.io/?https://static.wikia.nocookie.net/valorant/images/5/5c/Loading_Screen_Sunset.png/revision/latest/scale-to-width-down/1000?cb=20230829125442",
+  Abyss: "https://corsproxy.io/?https://static.wikia.nocookie.net/valorant/images/6/61/Loading_Screen_Abyss.png/revision/latest/scale-to-width-down/1000?cb=20240730145619"
+};
+    // 수정된 selectRandomMap 함수
 function selectRandomMap() {
   const labels = document.querySelectorAll(".map-item");
   const excluded = Array.from(labels)
@@ -452,13 +467,28 @@ function selectRandomMap() {
     .map(label => label.textContent);
   const available = allMaps.filter(m => !excluded.includes(m));
   const resultDiv = document.getElementById("mapResult");
+  const img = document.getElementById("mapImage");
+
   if (available.length === 0) {
     resultDiv.innerText = "맵: 선택 가능한 맵이 없습니다.";
+    img.style.display = "none";
     return;
   }
+
   const selected = available[Math.floor(Math.random() * available.length)];
   resultDiv.innerText = `맵: ${selected}`;
+
+  // 실제 맵 이미지 URL 매핑 사용
+  const imageUrl = mapImages[selected];
+  if (imageUrl) {
+    img.src = imageUrl;
+    img.style.display = "block";
+  } else {
+    img.style.display = "none";
+  }
 }
+
+
     renderPlayerList();
   </script>
 </body>
